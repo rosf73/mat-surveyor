@@ -29,8 +29,18 @@ class AddOnCurrentPositionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: onPressed,
-      label: const Text('현재 위치에서', style: TextStyle(fontWeight: FontWeight.bold)),
-      icon: const Icon(Icons.location_on_outlined),
+      backgroundColor: Colors.white,
+      label: const Text(
+        '현재 위치에서',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Color.fromARGB(255, 255, 110, 110),
+        ),
+      ),
+      icon: const Icon(
+        Icons.location_on_outlined,
+        color: Color.fromARGB(255, 255, 110, 110),
+      ),
     );
   }
 }
@@ -46,8 +56,18 @@ class AddOnNewPositionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: onPressed,
-      label: const Text('새로운 주소', style: TextStyle(fontWeight: FontWeight.bold)),
-      icon: const Icon(Icons.abc),
+      backgroundColor: Colors.white,
+      label: const Text(
+        '새로운 주소',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Color.fromARGB(255, 255, 110, 110),
+        ),
+      ),
+      icon: const Icon(
+        Icons.abc,
+        color: Color.fromARGB(255, 255, 110, 110),
+      ),
     );
   }
 }
