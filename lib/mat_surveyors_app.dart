@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mat_surveyors/floating_action.dart';
 import 'package:mat_surveyors/map.dart';
 
 enum MatSurveyorsViewType {
@@ -36,19 +37,42 @@ class MatSurveyorsApp extends StatelessWidget {
 class _MatSurveyorsHome extends StatelessWidget {
   const _MatSurveyorsHome();
 
+  void onExtend() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      floatingActionButton: Column(),
-      body: IndexedStack(
+    return Scaffold(
+      body: const IndexedStack(
         children: [
           MatMap(),
           Column(),
         ],
       ),
+      floatingActionButton: Container(
+        alignment: Alignment.bottomRight,
+        child: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AddOnCurrentPositionButton(),
+            AddOnNewPositionButton(),
+            AddExtendButton(),
+          ],
+        ),
+      ),
     );
   }
 }
+
+// class _HomeContainer extends StatelessWidget {
+//   const _HomeContainer();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Ce
+//   }
+// }
 
 class AppState extends ChangeNotifier {
 
