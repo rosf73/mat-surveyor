@@ -37,12 +37,17 @@ class MatMapState extends State<MatMap> {
     );
   }
 
-  void onMapReady(NaverMapController controller) {
-    mapController = controller;
-
+  void onMapReady(NaverMapController controller) async {
     var latLng = NLatLng(widget.initPosition.latitude, widget.initPosition.longitude);
-    final marker = NMarker(id: '1', position: latLng);
-    mapController.addOverlay(marker);
+    final markerIcon = await NOverlayImage.fromWidget(
+      widget: Image.asset('assets/marker.png'),
+      size: const Size(50, 50),
+      context: context,
+    );
+    final marker = NMarker(id: '1', position: latLng, icon: markerIcon);
+    controller.addOverlay(marker);
+
+    mapController = controller;
   }
 
   void onMapTapped(NPoint point, NLatLng latLng) {
