@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:geolocator/geolocator.dart';
 
 class MatMap extends StatefulWidget {
@@ -39,9 +40,11 @@ class MatMapState extends State<MatMap> {
 
   void onMapReady(NaverMapController controller) async {
     var latLng = NLatLng(widget.initPosition.latitude, widget.initPosition.longitude);
+    var isAOS = foundation.defaultTargetPlatform == foundation.TargetPlatform.android;
+
     final markerIcon = await NOverlayImage.fromWidget(
       widget: Image.asset('assets/marker.png'),
-      size: const Size(50, 50),
+      size: (isAOS) ? const Size(72, 72) : const Size(24, 24),
       context: context,
     );
     final marker = NMarker(id: '1', position: latLng, icon: markerIcon);
