@@ -39,6 +39,10 @@ class MatMapState extends State<MatMap> {
 
   void onMapReady(NaverMapController controller) {
     mapController = controller;
+
+    var latLng = NLatLng(widget.initPosition.latitude, widget.initPosition.longitude);
+    final marker = NMarker(id: '1', position: latLng);
+    mapController.addOverlay(marker);
   }
 
   void onMapTapped(NPoint point, NLatLng latLng) {
