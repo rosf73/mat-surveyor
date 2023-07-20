@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:geolocator/geolocator.dart';
 
 class MatMap extends StatefulWidget {
-  const MatMap({super.key});
+  final Position initPosition;
+
+  const MatMap({
+    super.key,
+    required this.initPosition,
+  });
 
   @override
   State<StatefulWidget> createState() => MatMapState();
@@ -14,9 +20,13 @@ class MatMapState extends State<MatMap> {
 
   @override
   Widget build(BuildContext context) {
+    var latLng = NLatLng(widget.initPosition.latitude, widget.initPosition.longitude);
+
     return Center(
       child: NaverMap(
-        options: options.copyWith( /* custom map view */ ),
+        options: options.copyWith(
+          initialCameraPosition: NCameraPosition(target: latLng, zoom: 15,),
+        ),
         onMapReady: onMapReady,
         onMapTapped: onMapTapped,
         onSymbolTapped: onSymbolTapped,

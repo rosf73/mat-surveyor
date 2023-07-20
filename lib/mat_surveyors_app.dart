@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mat_surveyors/floating_action.dart';
 import 'package:mat_surveyors/map.dart';
@@ -41,13 +44,35 @@ class _MatSurveyorsHome extends StatelessWidget {
 
   }
 
+  Future<Position> getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.best,
+    );
+    log('position = ${position.latitude}, ${position.longitude}');
+    return position;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const IndexedStack(
+      body: IndexedStack(
         children: [
-          MatMap(),
-          Column(),
+          FutureBuilder(
+            future: getCurrentLocation(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+
+              Position pos = snapshot.data;
+              return MatMap(initPosition: pos);
+            },
+          ),
+          const Column(),
         ],
       ),
       floatingActionButton: Container(
