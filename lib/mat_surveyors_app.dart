@@ -40,10 +40,6 @@ class MatSurveyorsApp extends StatelessWidget {
 class _MatSurveyorsHome extends StatelessWidget {
   const _MatSurveyorsHome();
 
-  void onExtend() {
-
-  }
-
   Future<Position> getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.best,
@@ -75,29 +71,51 @@ class _MatSurveyorsHome extends StatelessWidget {
           const Column(),
         ],
       ),
-      floatingActionButton: Container(
-        alignment: Alignment.bottomRight,
-        child: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AddOnCurrentPositionButton(),
-            AddOnNewPositionButton(),
-            AddExtendButton(),
-          ],
-        ),
-      ),
+      floatingActionButton: const MarkerAddButtons(),
     );
   }
 }
 
-// class _HomeContainer extends StatelessWidget {
-//   const _HomeContainer();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Ce
-//   }
-// }
+class MarkerAddButtons extends StatefulWidget {
+  const MarkerAddButtons({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _MarkerAddButtonsState();
+}
+
+class _MarkerAddButtonsState extends State<MarkerAddButtons> {
+  bool extended = false;
+  onExtend() {
+    setState(() {
+      extended = !extended;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 500,
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 500),
+            bottom: extended ? 130.0 : 0.0,
+            curve: Curves.fastOutSlowIn,
+            child: const AddOnCurrentPositionButton(),
+          ),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 500),
+            bottom: extended ? 65 : 0,
+            curve: Curves.fastOutSlowIn,
+            child: const AddOnNewPositionButton(),
+          ),
+          AddExtendButton(onClick: onExtend),
+        ],
+      ),
+    );
+  }
+}
 
 class AppState extends ChangeNotifier {
 
