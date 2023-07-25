@@ -3,8 +3,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mat_surveyors/exceptions/no_permission.dart';
 import 'package:mat_surveyors/floating_action.dart';
 import 'package:mat_surveyors/map.dart';
+import 'package:mat_surveyors/onboard.dart';
+import 'package:mat_surveyors/permission.dart';
 
 enum MatSurveyorsViewType {
   map,
@@ -41,6 +44,10 @@ class _MatSurveyorsHome extends StatelessWidget {
   const _MatSurveyorsHome();
 
   Future<Position> getCurrentLocation() async {
+    if (!await requestLocationPermission()) {
+      throw NoPermissionException("");
+    }
+
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.best,
     );
@@ -49,19 +56,23 @@ class _MatSurveyorsHome extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  {
     return Scaffold(
       body: IndexedStack(
         children: [
           FutureBuilder(
             future: getCurrentLocation(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (!snapshot.hasData) {
-                return Container();
+              if (snapshot.hasError) {
+                if (snapshot.error is NoPermissionException) {
+                  return const LocationOnboard();
+                } else {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
               }
 
-              if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
+              if (!snapshot.hasData) {
+                return Container();
               }
 
               Position pos = snapshot.data;
