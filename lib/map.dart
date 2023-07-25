@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:geolocator/geolocator.dart';
@@ -16,8 +16,17 @@ class MatMap extends StatefulWidget {
 }
 
 class MatMapState extends State<MatMap> {
+  Image myMarker = Image.asset('assets/marker.png');
+  NLatLng? latLng;
+
   late NaverMapController mapController;
   NaverMapViewOptions options = const NaverMapViewOptions();
+
+  @override
+  void didChangeDependencies() {
+    precacheImage(myMarker.image, context);
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,18 +47,7 @@ class MatMapState extends State<MatMap> {
     );
   }
 
-  void onMapReady(NaverMapController controller) async {
-    var latLng = NLatLng(widget.initPosition.latitude, widget.initPosition.longitude);
-    var isAOS = foundation.defaultTargetPlatform == foundation.TargetPlatform.android;
-
-    final markerIcon = await NOverlayImage.fromWidget(
-      widget: Image.asset('assets/marker.png'),
-      size: (isAOS) ? const Size(72, 72) : const Size(24, 24),
-      context: context,
-    );
-    final marker = NMarker(id: '1', position: latLng, icon: markerIcon);
-    controller.addOverlay(marker);
-
+  void onMapReady(NaverMapController controller) {
     mapController = controller;
   }
 
@@ -62,7 +60,10 @@ class MatMapState extends State<MatMap> {
   }
 
   void onCameraChange(NCameraUpdateReason reason, bool isGesture) {
-    // do something
+    if (latLng == null) {
+      latLng = NLatLng(widget.initPosition.latitude, widget.initPosition.longitude);
+      setMarker(latLng!);
+    }
   }
 
   void onCameraIdle() {
@@ -71,5 +72,17 @@ class MatMapState extends State<MatMap> {
 
   void onSelectedIndoorChanged(NSelectedIndoor? selectedIndoor) {
     // do something
+  }
+
+  void setMarker(NLatLng latLng) async {
+    var isAOS = foundation.defaultTargetPlatform == foundation.TargetPlatform.android;
+
+    final markerIcon = await NOverlayImage.fromWidget(
+      widget: myMarker,
+      size: (isAOS) ? const Size(72, 72) : const Size(24, 24),
+      context: context,
+    );
+    final marker = NMarker(id: '1', position: latLng, icon: markerIcon);
+    mapController.addOverlay(marker);
   }
 }
