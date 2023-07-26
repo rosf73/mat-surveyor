@@ -3,8 +3,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mat_surveyors/exceptions/empty.dart';
+import 'package:mat_surveyors/exceptions/no_permission.dart';
 import 'package:mat_surveyors/floating_action.dart';
 import 'package:mat_surveyors/map.dart';
+import 'package:mat_surveyors/onboard.dart';
+import 'package:mat_surveyors/permission.dart';
+import 'package:mat_surveyors/providers/lifecycle_provider.dart';
+import 'package:provider/provider.dart';
 
 enum MatSurveyorsViewType {
   map,
@@ -40,38 +46,62 @@ class MatSurveyorsApp extends StatelessWidget {
 class _MatSurveyorsHome extends StatelessWidget {
   const _MatSurveyorsHome();
 
-  Future<Position> getCurrentLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.best,
-    );
-    log('position = ${position.latitude}, ${position.longitude}');
-    return position;
+  Future<Position> _getCurrentLocation(AppLifecycleState? state) async {
+    final granted = await _isGrantedPermission(state);
+    if (granted == null) {
+      throw ReturnEmptyException("");
+    } else if (!granted) {
+      throw NoPermissionException("");
+    } else {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+      );
+      log('position = ${position.latitude}, ${position.longitude}');
+      return position;
+    }
+  }
+
+  Future<bool?> _isGrantedPermission(AppLifecycleState? state) async {
+    if (state == AppLifecycleState.resumed || state == null) {
+      return await requestLocationPermission();
+    } else {
+      return null;
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        children: [
-          FutureBuilder(
-            future: getCurrentLocation(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (!snapshot.hasData) {
-                return Container();
-              }
+  Widget build(BuildContext context)  {
+    return Consumer<AppState>(
+      builder: (context, provider, child) => Scaffold(
+        body: IndexedStack(
+          children: [
+            FutureBuilder(
+              future: _getCurrentLocation(provider.lifecycleState),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasError) {
+                  log("exception = ${snapshot.error}");
+                  if (snapshot.error is NoPermissionException) {
+                    return const LocationOnboard();
+                  } else if (snapshot.error is ReturnEmptyException) {
+                    return Container();
+                  } else {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                }
 
-              if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              }
+                if (!snapshot.hasData) {
+                  return const Center(child: Text('Error: no position data'));
+                }
 
-              Position pos = snapshot.data;
-              return MatMap(initPosition: pos);
-            },
-          ),
-          const Column(),
-        ],
+                Position pos = snapshot.data;
+                return MatMap(initPosition: pos);
+              },
+            ),
+            const Column(),
+          ],
+        ),
+        floatingActionButton: const MarkerAddButtons(),
       ),
-      floatingActionButton: const MarkerAddButtons(),
     );
   }
 }
@@ -115,8 +145,4 @@ class _MarkerAddButtonsState extends State<MarkerAddButtons> {
       ),
     );
   }
-}
-
-class AppState extends ChangeNotifier {
-
 }

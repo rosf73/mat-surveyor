@@ -1,10 +1,10 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:mat_surveyors/permission.dart';
+import 'package:mat_surveyors/providers/lifecycle_provider.dart';
+import 'package:mat_surveyors/widgets/lifecycle_widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'mat_surveyors_app.dart';
@@ -17,11 +17,6 @@ void main() async {
 
 Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  if (!await requestLocationPermission()) {
-    exit(0);
-    // process to reject any permission
-  }
 
   await FlutterConfig.loadEnvVariables();
 
@@ -41,7 +36,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => AppState(),
-      child: const MatSurveyorsApp(),
+      child: const LifecycleWidget(
+        child: MatSurveyorsApp(),
+      ),
     );
   }
 }
