@@ -90,7 +90,7 @@ class _MatSurveyorsHome extends StatelessWidget {
                 }
 
                 if (!snapshot.hasData) {
-                  return Container();
+                  return const Center(child: Text('Error: no position data'));
                 }
 
                 Position pos = snapshot.data;
