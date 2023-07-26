@@ -62,7 +62,7 @@ class MatMapState extends State<MatMap> {
   void onCameraChange(NCameraUpdateReason reason, bool isGesture) {
     if (latLng == null) {
       latLng = NLatLng(widget.initPosition.latitude, widget.initPosition.longitude);
-      setMarker(latLng!);
+      _setMarker(latLng!, 'my', myMarker);
     }
   }
 
@@ -74,15 +74,15 @@ class MatMapState extends State<MatMap> {
     // do something
   }
 
-  void setMarker(NLatLng latLng) async {
+  void _setMarker(NLatLng latLng, String id, Widget icon) async {
     var isAOS = foundation.defaultTargetPlatform == foundation.TargetPlatform.android;
 
     final markerIcon = await NOverlayImage.fromWidget(
-      widget: myMarker,
+      widget: icon,
       size: (isAOS) ? const Size(72, 72) : const Size(24, 24),
       context: context,
     );
-    final marker = NMarker(id: '1', position: latLng, icon: markerIcon);
+    final marker = NMarker(id: id, position: latLng, icon: markerIcon);
     mapController.addOverlay(marker);
   }
 }
