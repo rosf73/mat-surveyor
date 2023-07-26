@@ -53,7 +53,16 @@ class MatMapState extends State<MatMap> {
   }
 
   void onMapTapped(NPoint point, NLatLng latLng) {
-    _setMarker(latLng, 'tab', Icon(Icons.location_on, size: (isAOS) ? 72 : 24));
+    _setMarker(
+      latLng: latLng,
+      id: 'tap',
+      icon: Icon(Icons.location_on, size: (isAOS) ? 72 : 24),
+      onTap: () {
+        mapController.deleteOverlay(
+            const NOverlayInfo(type: NOverlayType.marker, id: 'tap')
+        );
+      }
+    );
   }
 
   void onSymbolTapped(NSymbolInfo symbolInfo) {
@@ -63,7 +72,7 @@ class MatMapState extends State<MatMap> {
   void onCameraChange(NCameraUpdateReason reason, bool isGesture) {
     if (latLng == null) {
       latLng = NLatLng(widget.initPosition.latitude, widget.initPosition.longitude);
-      _setMarker(latLng!, 'my', myMarker);
+      _setMarker(latLng: latLng!, id: 'my', icon: myMarker);
     }
   }
 
@@ -75,13 +84,23 @@ class MatMapState extends State<MatMap> {
     // do something
   }
 
-  void _setMarker(NLatLng latLng, String id, Widget icon) async {
+  void _setMarker({
+    required NLatLng latLng,
+    required String id,
+    required Widget icon,
+    Function? onTap,
+  }) async {
     final markerIcon = await NOverlayImage.fromWidget(
       widget: icon,
       size: (isAOS) ? const Size(72, 72) : const Size(24, 24),
       context: context,
     );
+
     final marker = NMarker(id: id, position: latLng, icon: markerIcon);
+    marker.setOnTapListener((overlay) => {
+      onTap?.call()
+    });
+
     mapController.addOverlay(marker);
   }
 }
