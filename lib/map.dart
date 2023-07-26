@@ -18,6 +18,7 @@ class MatMap extends StatefulWidget {
 class MatMapState extends State<MatMap> {
   Image myMarker = Image.asset('assets/marker.png');
   NLatLng? latLng;
+  final bool isAOS = foundation.defaultTargetPlatform == foundation.TargetPlatform.android;
 
   late NaverMapController mapController;
   NaverMapViewOptions options = const NaverMapViewOptions();
@@ -52,7 +53,7 @@ class MatMapState extends State<MatMap> {
   }
 
   void onMapTapped(NPoint point, NLatLng latLng) {
-    // do something
+    _setMarker(latLng, 'tab', Icon(Icons.location_on, size: (isAOS) ? 72 : 24));
   }
 
   void onSymbolTapped(NSymbolInfo symbolInfo) {
@@ -75,8 +76,6 @@ class MatMapState extends State<MatMap> {
   }
 
   void _setMarker(NLatLng latLng, String id, Widget icon) async {
-    var isAOS = foundation.defaultTargetPlatform == foundation.TargetPlatform.android;
-
     final markerIcon = await NOverlayImage.fromWidget(
       widget: icon,
       size: (isAOS) ? const Size(72, 72) : const Size(24, 24),
