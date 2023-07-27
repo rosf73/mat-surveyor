@@ -99,12 +99,12 @@ class _MatSurveyorsHomeState extends State<MatSurveyorsHome> {
                     } else if (snapshot.error is ReturnEmptyException) {
                       return Container();
                     } else {
-                      return Center(child: Text('Error: ${snapshot.error}'));
+                      return Center(child: Text('지도를 불러오지 못했습니다.\nError: ${snapshot.error}'));
                     }
                   }
 
                   if (!snapshot.hasData) {
-                    return const Center(child: Text('Error: no position data'));
+                    return const Center(child: Text('Loading...'));
                   }
 
                   Position pos = snapshot.data;
