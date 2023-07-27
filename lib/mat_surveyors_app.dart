@@ -86,36 +86,31 @@ class _MatSurveyorsHomeState extends State<MatSurveyorsHome> {
   @override
   Widget build(BuildContext context)  {
     return Scaffold(
-        body: IndexedStack(
-          children: [
-            Consumer<AppState>(
-              builder: (context, provider, child) => FutureBuilder(
-                future: _getCurrentLocation(provider.lifecycleState),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasError) {
-                    log("exception = ${snapshot.error}");
-                    if (snapshot.error is NoPermissionException) {
-                      return const LocationOnboard();
-                    } else if (snapshot.error is ReturnEmptyException) {
-                      return Container();
-                    } else {
-                      return Center(child: Text('지도를 불러오지 못했습니다.\nError: ${snapshot.error}'));
-                    }
-                  }
+      body: Consumer<AppState>(
+        builder: (context, provider, child) => FutureBuilder(
+          future: _getCurrentLocation(provider.lifecycleState),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasError) {
+              log("exception = ${snapshot.error}");
+              if (snapshot.error is NoPermissionException) {
+                return const LocationOnboard();
+              } else if (snapshot.error is ReturnEmptyException) {
+                return Container();
+              } else {
+                return Center(child: Text('지도를 불러오지 못했습니다.\nError: ${snapshot.error}'));
+              }
+            }
 
-                  if (!snapshot.hasData) {
-                    return const Center(child: Text('Loading...'));
-                  }
+            if (!snapshot.hasData) {
+              return const Center(child: Text('Loading...'));
+            }
 
-                  Position pos = snapshot.data;
-                  return MatMap(initPosition: pos, onTapMap: _onTapMap);
-                },
-              ),
-            ),
-            const Column(),
-          ],
+            Position pos = snapshot.data;
+            return MatMap(initPosition: pos, onTapMap: _onTapMap);
+          },
         ),
-        floatingActionButton: MarkerAddButtons(enableMarker: enableMarker),
+      ),
+      floatingActionButton: MarkerAddButtons(enableMarker: enableMarker),
     );
   }
 }
