@@ -15,6 +15,9 @@ class AppState extends ChangeNotifier {
   Position? _position;
   Position? get position => _position;
 
+  bool _enableMarker = false;
+  bool get enableMarker => _enableMarker;
+
   AppState() {
     _setMainView();
   }
@@ -37,6 +40,13 @@ class AppState extends ChangeNotifier {
       _mainViewType = ViewType.notice;
     }
     log("mainViewType = $mainViewType, position = $position");
+
+    notifyListeners();
+  }
+
+  setEnableMarker({required bool enable, double? lat, double? lon}) {
+    log("set marker = $enable, $lat, $lon");
+    _enableMarker = enable;
 
     notifyListeners();
   }

@@ -51,26 +51,18 @@ class MatSurveyorsHome extends StatefulWidget {
 class _MatSurveyorsHomeState extends State<MatSurveyorsHome> {
   late AppState _appState;
 
-  bool enableMarker = false;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _appState = Provider.of<AppState>(context);
   }
 
-  void _onTapMap({required bool enable, double? lat, double? lon}) {
-    setState(() {
-      enableMarker = enable;
-    });
-  }
-
   @override
   Widget build(BuildContext context)  {
     log("build main view");
     return Scaffold(
-      body: MainScreen(viewType: _appState.mainViewType, position: _appState.position, onTapMap: _onTapMap),
-      floatingActionButton: MarkerAddButtons(enableMarker: enableMarker),
+      body: MainScreen(viewType: _appState.mainViewType, position: _appState.position),
+      floatingActionButton: MarkerAddButtons(enableMarker: _appState.enableMarker),
     );
   }
 }
@@ -78,24 +70,18 @@ class _MatSurveyorsHomeState extends State<MatSurveyorsHome> {
 class MainScreen extends StatelessWidget {
   final ViewType viewType;
   final Position? position;
-  final void Function({
-  required bool enable,
-  double? lat,
-  double? lon,
-  }) onTapMap;
 
   const MainScreen({
     super.key,
     required this.viewType,
     this.position,
-    required this.onTapMap,
   });
 
   @override
   Widget build(BuildContext context) {
     return (viewType == ViewType.loading) ? const Center(child: Text('Loading...'))
         : (viewType == ViewType.notice) ? const LocationOnboard()
-        : (position != null) ? MatMap(initPosition: position!, onTapMap: onTapMap)
+        : (position != null) ? const MatMap()
         : const Center(child: Text('지도를 불러오지 못했습니다.\nError: no position data'));
   }
 }
