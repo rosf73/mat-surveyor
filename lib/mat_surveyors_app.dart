@@ -3,13 +3,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mat_surveyors/exceptions/empty.dart';
-import 'package:mat_surveyors/exceptions/no_permission.dart';
 import 'package:mat_surveyors/floating_action.dart';
 import 'package:mat_surveyors/map.dart';
 import 'package:mat_surveyors/onboard.dart';
-import 'package:mat_surveyors/permission.dart';
 import 'package:mat_surveyors/providers/lifecycle_provider.dart';
+import 'package:mat_surveyors/utils/view_type.dart';
 import 'package:provider/provider.dart';
 
 enum MatSurveyorsViewType {
@@ -51,30 +49,14 @@ class MatSurveyorsHome extends StatefulWidget {
 }
 
 class _MatSurveyorsHomeState extends State<MatSurveyorsHome> {
+  late AppState _appState;
+
   bool enableMarker = false;
-  late Position position;
 
-  Future<Position> _getCurrentLocation(AppLifecycleState? state) async {
-    final granted = await _isGrantedPermission(state);
-    if (granted == null) {
-      throw ReturnEmptyException("");
-    } else if (!granted) {
-      throw NoPermissionException("");
-    } else {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best,
-      );
-      log('position = ${position.latitude}, ${position.longitude}');
-      return position;
-    }
-  }
-
-  Future<bool?> _isGrantedPermission(AppLifecycleState? state) async {
-    if (state == AppLifecycleState.resumed || state == null) {
-      return await requestLocationPermission();
-    } else {
-      return null;
-    }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _appState = Provider.of<AppState>(context);
   }
 
   void _onTapMap({required bool enable, double? lat, double? lon}) {
@@ -85,33 +67,36 @@ class _MatSurveyorsHomeState extends State<MatSurveyorsHome> {
 
   @override
   Widget build(BuildContext context)  {
+    log("build main view");
     return Scaffold(
-      body: Consumer<AppState>(
-        builder: (context, provider, child) => FutureBuilder(
-          future: _getCurrentLocation(provider.lifecycleState),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasError) {
-              log("exception = ${snapshot.error}");
-              if (snapshot.error is NoPermissionException) {
-                return const LocationOnboard();
-              } else if (snapshot.error is ReturnEmptyException) {
-                return Container();
-              } else {
-                return Center(child: Text('지도를 불러오지 못했습니다.\nError: ${snapshot.error}'));
-              }
-            }
-
-            if (!snapshot.hasData) {
-              return const Center(child: Text('Loading...'));
-            }
-
-            Position pos = snapshot.data;
-            return MatMap(initPosition: pos, onTapMap: _onTapMap);
-          },
-        ),
-      ),
+      body: MainScreen(viewType: _appState.mainViewType, position: _appState.position, onTapMap: _onTapMap),
       floatingActionButton: MarkerAddButtons(enableMarker: enableMarker),
     );
+  }
+}
+
+class MainScreen extends StatelessWidget {
+  final ViewType viewType;
+  final Position? position;
+  final void Function({
+  required bool enable,
+  double? lat,
+  double? lon,
+  }) onTapMap;
+
+  const MainScreen({
+    super.key,
+    required this.viewType,
+    this.position,
+    required this.onTapMap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return (viewType == ViewType.loading) ? const Center(child: Text('Loading...'))
+        : (viewType == ViewType.notice) ? const LocationOnboard()
+        : (position != null) ? MatMap(initPosition: position!, onTapMap: onTapMap)
+        : const Center(child: Text('지도를 불러오지 못했습니다.\nError: no position data'));
   }
 }
 
