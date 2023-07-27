@@ -1,23 +1,25 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter/foundation.dart' as foundation;
-import 'package:geolocator/geolocator.dart';
+import 'package:mat_surveyors/exceptions/empty.dart';
+import 'package:mat_surveyors/providers/lifecycle_provider.dart';
+import 'package:provider/provider.dart';
 
 class MatMap extends StatefulWidget {
-  final Position initPosition;
-
-  const MatMap({
-    super.key,
-    required this.initPosition,
-  });
+  const MatMap({super.key});
 
   @override
   State<StatefulWidget> createState() => MatMapState();
 }
 
 class MatMapState extends State<MatMap> {
+  late AppState _appState;
+
   Image myMarker = Image.asset('assets/marker.png');
   NLatLng? latLng;
+  final bool isAOS = foundation.defaultTargetPlatform == foundation.TargetPlatform.android;
 
   late NaverMapController mapController;
   NaverMapViewOptions options = const NaverMapViewOptions();
@@ -26,12 +28,17 @@ class MatMapState extends State<MatMap> {
   void didChangeDependencies() {
     precacheImage(myMarker.image, context);
     super.didChangeDependencies();
+    _appState = Provider.of<AppState>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
-    var latLng = NLatLng(widget.initPosition.latitude, widget.initPosition.longitude);
+    if (_appState.position == null) {
+      throw ReturnEmptyException("");
+    }
+    var latLng = NLatLng(_appState.position!.latitude, _appState.position!.longitude);
 
+    log("build map view");
     return Center(
       child: NaverMap(
         options: options.copyWith(
@@ -52,7 +59,18 @@ class MatMapState extends State<MatMap> {
   }
 
   void onMapTapped(NPoint point, NLatLng latLng) {
-    // do something
+    _setMarker(
+      latLng: latLng,
+      id: 'tap',
+      icon: Icon(Icons.location_on, size: (isAOS) ? 72 : 24),
+      onTap: () {
+        mapController.deleteOverlay(
+            const NOverlayInfo(type: NOverlayType.marker, id: 'tap')
+        );
+        _appState.setEnableMarker(enable: false);
+      }
+    );
+    _appState.setEnableMarker(enable: true, lat: latLng.latitude, lon: latLng.longitude);
   }
 
   void onSymbolTapped(NSymbolInfo symbolInfo) {
@@ -61,8 +79,8 @@ class MatMapState extends State<MatMap> {
 
   void onCameraChange(NCameraUpdateReason reason, bool isGesture) {
     if (latLng == null) {
-      latLng = NLatLng(widget.initPosition.latitude, widget.initPosition.longitude);
-      setMarker(latLng!);
+      latLng = NLatLng(_appState.position!.latitude, _appState.position!.longitude);
+      _setMarker(latLng: latLng!, id: 'my', icon: myMarker);
     }
   }
 
@@ -74,15 +92,23 @@ class MatMapState extends State<MatMap> {
     // do something
   }
 
-  void setMarker(NLatLng latLng) async {
-    var isAOS = foundation.defaultTargetPlatform == foundation.TargetPlatform.android;
-
+  void _setMarker({
+    required NLatLng latLng,
+    required String id,
+    required Widget icon,
+    Function? onTap,
+  }) async {
     final markerIcon = await NOverlayImage.fromWidget(
-      widget: myMarker,
+      widget: icon,
       size: (isAOS) ? const Size(72, 72) : const Size(24, 24),
       context: context,
     );
-    final marker = NMarker(id: '1', position: latLng, icon: markerIcon);
+
+    final marker = NMarker(id: id, position: latLng, icon: markerIcon);
+    marker.setOnTapListener((overlay) => {
+      onTap?.call()
+    });
+
     mapController.addOverlay(marker);
   }
 }

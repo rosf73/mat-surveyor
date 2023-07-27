@@ -3,13 +3,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mat_surveyors/exceptions/empty.dart';
-import 'package:mat_surveyors/exceptions/no_permission.dart';
 import 'package:mat_surveyors/floating_action.dart';
 import 'package:mat_surveyors/map.dart';
 import 'package:mat_surveyors/onboard.dart';
-import 'package:mat_surveyors/permission.dart';
 import 'package:mat_surveyors/providers/lifecycle_provider.dart';
+import 'package:mat_surveyors/utils/view_type.dart';
 import 'package:provider/provider.dart';
 
 enum MatSurveyorsViewType {
@@ -34,7 +32,7 @@ class MatSurveyorsApp extends StatelessWidget {
       routerConfig: GoRouter(routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => const _MatSurveyorsHome(),
+          builder: (context, state) => const MatSurveyorsHome(),
           routes: const [
           ],
         )
@@ -43,71 +41,54 @@ class MatSurveyorsApp extends StatelessWidget {
   }
 }
 
-class _MatSurveyorsHome extends StatelessWidget {
-  const _MatSurveyorsHome();
+class MatSurveyorsHome extends StatefulWidget {
+  const MatSurveyorsHome({super.key});
 
-  Future<Position> _getCurrentLocation(AppLifecycleState? state) async {
-    final granted = await _isGrantedPermission(state);
-    if (granted == null) {
-      throw ReturnEmptyException("");
-    } else if (!granted) {
-      throw NoPermissionException("");
-    } else {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best,
-      );
-      log('position = ${position.latitude}, ${position.longitude}');
-      return position;
-    }
-  }
+  @override
+  State<StatefulWidget> createState() => _MatSurveyorsHomeState();
+}
 
-  Future<bool?> _isGrantedPermission(AppLifecycleState? state) async {
-    if (state == AppLifecycleState.resumed || state == null) {
-      return await requestLocationPermission();
-    } else {
-      return null;
-    }
+class _MatSurveyorsHomeState extends State<MatSurveyorsHome> {
+  late AppState _appState;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _appState = Provider.of<AppState>(context);
   }
 
   @override
   Widget build(BuildContext context)  {
-    return Consumer<AppState>(
-      builder: (context, provider, child) => Scaffold(
-        body: IndexedStack(
-          children: [
-            FutureBuilder(
-              future: _getCurrentLocation(provider.lifecycleState),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasError) {
-                  log("exception = ${snapshot.error}");
-                  if (snapshot.error is NoPermissionException) {
-                    return const LocationOnboard();
-                  } else if (snapshot.error is ReturnEmptyException) {
-                    return Container();
-                  } else {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                }
-
-                if (!snapshot.hasData) {
-                  return const Center(child: Text('Error: no position data'));
-                }
-
-                Position pos = snapshot.data;
-                return MatMap(initPosition: pos);
-              },
-            ),
-            const Column(),
-          ],
-        ),
-        floatingActionButton: const MarkerAddButtons(),
-      ),
+    log("build main view");
+    return Scaffold(
+      body: MainScreen(viewType: _appState.mainViewType, position: _appState.position),
+      floatingActionButton: MarkerAddButtons(enableMarker: _appState.enableMarker),
     );
   }
 }
 
+class MainScreen extends StatelessWidget {
+  final ViewType viewType;
+  final Position? position;
+
+  const MainScreen({
+    super.key,
+    required this.viewType,
+    this.position,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return (viewType == ViewType.loading) ? const Center(child: Text('Loading...'))
+        : (viewType == ViewType.notice) ? const LocationOnboard()
+        : (position != null) ? const MatMap()
+        : const Center(child: Text('지도를 불러오지 못했습니다.\nError: no position data'));
+  }
+}
+
 class MarkerAddButtons extends StatefulWidget {
-  const MarkerAddButtons({super.key});
+  final bool enableMarker;
+  const MarkerAddButtons({super.key, required this.enableMarker});
 
   @override
   State<StatefulWidget> createState() => _MarkerAddButtonsState();
@@ -124,13 +105,13 @@ class _MarkerAddButtonsState extends State<MarkerAddButtons> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 500,
+      height: 300,
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
-            bottom: extended ? 130.0 : 0.0,
+            bottom: extended && widget.enableMarker ? 130.0 : 0.0,
             curve: Curves.fastOutSlowIn,
             child: const AddOnCurrentPositionButton(),
           ),
