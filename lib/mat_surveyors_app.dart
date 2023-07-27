@@ -34,7 +34,7 @@ class MatSurveyorsApp extends StatelessWidget {
       routerConfig: GoRouter(routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => const _MatSurveyorsHome(),
+          builder: (context, state) => const MatSurveyorsHome(),
           routes: const [
           ],
         )
@@ -43,8 +43,16 @@ class MatSurveyorsApp extends StatelessWidget {
   }
 }
 
-class _MatSurveyorsHome extends StatelessWidget {
-  const _MatSurveyorsHome();
+class MatSurveyorsHome extends StatefulWidget {
+  const MatSurveyorsHome({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _MatSurveyorsHomeState();
+}
+
+class _MatSurveyorsHomeState extends State<MatSurveyorsHome> {
+  bool enableMarker = false;
+  late Position position;
 
   Future<Position> _getCurrentLocation(AppLifecycleState? state) async {
     final granted = await _isGrantedPermission(state);
@@ -69,45 +77,52 @@ class _MatSurveyorsHome extends StatelessWidget {
     }
   }
 
+  void _onTapMap({required bool enable, double? lat, double? lon}) {
+    setState(() {
+      enableMarker = enable;
+    });
+  }
+
   @override
   Widget build(BuildContext context)  {
-    return Consumer<AppState>(
-      builder: (context, provider, child) => Scaffold(
+    return Scaffold(
         body: IndexedStack(
           children: [
-            FutureBuilder(
-              future: _getCurrentLocation(provider.lifecycleState),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasError) {
-                  log("exception = ${snapshot.error}");
-                  if (snapshot.error is NoPermissionException) {
-                    return const LocationOnboard();
-                  } else if (snapshot.error is ReturnEmptyException) {
-                    return Container();
-                  } else {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+            Consumer<AppState>(
+              builder: (context, provider, child) => FutureBuilder(
+                future: _getCurrentLocation(provider.lifecycleState),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasError) {
+                    log("exception = ${snapshot.error}");
+                    if (snapshot.error is NoPermissionException) {
+                      return const LocationOnboard();
+                    } else if (snapshot.error is ReturnEmptyException) {
+                      return Container();
+                    } else {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
                   }
-                }
 
-                if (!snapshot.hasData) {
-                  return const Center(child: Text('Error: no position data'));
-                }
+                  if (!snapshot.hasData) {
+                    return const Center(child: Text('Error: no position data'));
+                  }
 
-                Position pos = snapshot.data;
-                return MatMap(initPosition: pos);
-              },
+                  Position pos = snapshot.data;
+                  return MatMap(initPosition: pos, onTapMap: _onTapMap);
+                },
+              ),
             ),
             const Column(),
           ],
         ),
-        floatingActionButton: const MarkerAddButtons(),
-      ),
+        floatingActionButton: MarkerAddButtons(enableMarker: enableMarker),
     );
   }
 }
 
 class MarkerAddButtons extends StatefulWidget {
-  const MarkerAddButtons({super.key});
+  final bool enableMarker;
+  const MarkerAddButtons({super.key, required this.enableMarker});
 
   @override
   State<StatefulWidget> createState() => _MarkerAddButtonsState();
@@ -124,13 +139,13 @@ class _MarkerAddButtonsState extends State<MarkerAddButtons> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 500,
+      height: 300,
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
-            bottom: extended ? 130.0 : 0.0,
+            bottom: extended && widget.enableMarker ? 130.0 : 0.0,
             curve: Curves.fastOutSlowIn,
             child: const AddOnCurrentPositionButton(),
           ),

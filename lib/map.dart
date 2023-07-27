@@ -5,10 +5,16 @@ import 'package:geolocator/geolocator.dart';
 
 class MatMap extends StatefulWidget {
   final Position initPosition;
+  final void Function({
+    required bool enable,
+    double? lat,
+    double? lon,
+  }) onTapMap;
 
   const MatMap({
     super.key,
     required this.initPosition,
+    required this.onTapMap,
   });
 
   @override
@@ -61,8 +67,10 @@ class MatMapState extends State<MatMap> {
         mapController.deleteOverlay(
             const NOverlayInfo(type: NOverlayType.marker, id: 'tap')
         );
+        widget.onTapMap(enable: false);
       }
     );
+    widget.onTapMap(enable: true, lat: latLng.latitude, lon: latLng.longitude);
   }
 
   void onSymbolTapped(NSymbolInfo symbolInfo) {
