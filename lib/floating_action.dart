@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mat_surveyors/utils/context_functions.dart';
 
 class AddExtendButton extends StatelessWidget {
   final Function onClick;
@@ -22,15 +23,13 @@ class AddExtendButton extends StatelessWidget {
 class AddOnCurrentPositionButton extends StatelessWidget {
   const AddOnCurrentPositionButton({super.key});
 
-  void onPressed() {
-
-  }
-
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       elevation: 3,
-      onPressed: onPressed,
+      onPressed: () {
+        showAddPopup(context);
+      },
       backgroundColor: Colors.white,
       label: const Text(
         '현채 마커에서',
@@ -50,15 +49,13 @@ class AddOnCurrentPositionButton extends StatelessWidget {
 class AddOnNewPositionButton extends StatelessWidget {
   const AddOnNewPositionButton({super.key});
 
-  void onPressed() {
-
-  }
-
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       elevation: 3,
-      onPressed: onPressed,
+      onPressed: () {
+        showAddPopup(context);
+      },
       backgroundColor: Colors.white,
       label: const Text(
         '주소 직접입력',
