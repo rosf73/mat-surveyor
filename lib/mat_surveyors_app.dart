@@ -96,11 +96,19 @@ class MarkerAddButtons extends StatefulWidget {
 }
 
 class _MarkerAddButtonsState extends State<MarkerAddButtons> {
+  late AppState appState;
+
   bool extended = false;
   onExtend(bool extend) {
     setState(() {
       extended = extend;
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appState = Provider.of<AppState>(context);
   }
 
   @override
@@ -114,13 +122,19 @@ class _MarkerAddButtonsState extends State<MarkerAddButtons> {
             duration: const Duration(milliseconds: 500),
             bottom: extended && widget.enableMarker ? 130.0 : 0.0,
             curve: Curves.fastOutSlowIn,
-            child: AddOnCurrentPositionButton(onClick: () => onExtend(false)),
+            child: AddOnCurrentPositionButton(onClickWithLocation: () {
+              onExtend(false);
+              return appState.markerLocation;
+            }),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
             bottom: extended ? 65 : 0,
             curve: Curves.fastOutSlowIn,
-            child: AddOnNewPositionButton(onClick: () => onExtend(false)),
+            child: AddOnNewPositionButton(onClick: () {
+              onExtend(false);
+              return;
+            }),
           ),
           AddExtendButton(onClick: () => onExtend(!extended)),
         ],

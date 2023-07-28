@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mat_surveyors/utils/context_functions.dart';
+import 'package:mat_surveyors/utils/pair.dart';
 
 class AddExtendButton extends StatelessWidget {
   final Function onClick;
@@ -20,10 +21,10 @@ class AddExtendButton extends StatelessWidget {
 }
 
 class AddOnCurrentPositionButton extends StatelessWidget {
-  final Function onClick;
+  final Pair<double, double>? Function() onClickWithLocation;
   const AddOnCurrentPositionButton({
     super.key,
-    required this.onClick,
+    required this.onClickWithLocation,
   });
 
   @override
@@ -31,8 +32,8 @@ class AddOnCurrentPositionButton extends StatelessWidget {
     return FloatingActionButton.extended(
       elevation: 3,
       onPressed: () {
-        onClick();
-        showAddPopup(context);
+        var location = onClickWithLocation();
+        showAddPopup(context, location);
       },
       backgroundColor: Colors.white,
       label: const Text(
@@ -63,7 +64,7 @@ class AddOnNewPositionButton extends StatelessWidget {
       elevation: 3,
       onPressed: () {
         onClick();
-        showAddPopup(context);
+        showAddPopup(context, null);
       },
       backgroundColor: Colors.white,
       label: const Text(

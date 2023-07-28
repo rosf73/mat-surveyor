@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:mat_surveyors/utils/pair.dart';
 
 class AddPopup extends StatefulWidget {
-  const AddPopup({super.key});
+  final Pair<double, double>? location;
+  const AddPopup({
+    super.key,
+    this.location,
+  });
 
   @override
   State<StatefulWidget> createState() => _AddPopupState();
 }
 
 class _AddPopupState extends State<AddPopup> {
+  late String address;
+
   final InputBorder inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(20),
     borderSide: const BorderSide(
@@ -17,6 +24,16 @@ class _AddPopupState extends State<AddPopup> {
       width: 2,
     )
   );
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.location != null) {
+      address = '${widget.location!.first}, ${widget.location!.second}'; // 추후에 Geocoder 연동
+    } else {
+      address = '장소를 골라보세요!';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +46,7 @@ class _AddPopupState extends State<AddPopup> {
       child: ListView(
         children: [
           const SizedBox(height: 28,),
-          const Text('주소주소주소'),
+          Text(address),
           const SizedBox(height: 10,),
           Align(
             alignment: AlignmentDirectional.center,
