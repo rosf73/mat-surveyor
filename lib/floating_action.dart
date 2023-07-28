@@ -20,13 +20,18 @@ class AddExtendButton extends StatelessWidget {
 }
 
 class AddOnCurrentPositionButton extends StatelessWidget {
-  const AddOnCurrentPositionButton({super.key});
+  final Function onClick;
+  const AddOnCurrentPositionButton({
+    super.key,
+    required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       elevation: 3,
       onPressed: () {
+        onClick();
         showAddPopup(context);
       },
       backgroundColor: Colors.white,
@@ -46,13 +51,18 @@ class AddOnCurrentPositionButton extends StatelessWidget {
 }
 
 class AddOnNewPositionButton extends StatelessWidget {
-  const AddOnNewPositionButton({super.key});
+  final Function onClick;
+  const AddOnNewPositionButton({
+    super.key,
+    required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       elevation: 3,
       onPressed: () {
+        onClick();
         showAddPopup(context);
       },
       backgroundColor: Colors.white,

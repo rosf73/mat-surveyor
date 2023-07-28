@@ -97,9 +97,9 @@ class MarkerAddButtons extends StatefulWidget {
 
 class _MarkerAddButtonsState extends State<MarkerAddButtons> {
   bool extended = false;
-  onExtend() {
+  onExtend(bool extend) {
     setState(() {
-      extended = !extended;
+      extended = extend;
     });
   }
 
@@ -114,15 +114,15 @@ class _MarkerAddButtonsState extends State<MarkerAddButtons> {
             duration: const Duration(milliseconds: 500),
             bottom: extended && widget.enableMarker ? 130.0 : 0.0,
             curve: Curves.fastOutSlowIn,
-            child: const AddOnCurrentPositionButton(),
+            child: AddOnCurrentPositionButton(onClick: () => onExtend(false)),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
             bottom: extended ? 65 : 0,
             curve: Curves.fastOutSlowIn,
-            child: const AddOnNewPositionButton(),
+            child: AddOnNewPositionButton(onClick: () => onExtend(false)),
           ),
-          AddExtendButton(onClick: onExtend),
+          AddExtendButton(onClick: () => onExtend(!extended)),
         ],
       ),
     );
