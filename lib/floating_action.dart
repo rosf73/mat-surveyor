@@ -13,7 +13,6 @@ class AddExtendButton extends StatelessWidget {
     return FloatingActionButton.extended(
       elevation: 3,
       onPressed: () => onClick(),
-      backgroundColor: const Color.fromARGB(255, 255, 110, 110),
       label: const Text('마커 추가하기', style: TextStyle(fontWeight: FontWeight.bold)),
       icon: const Icon(Icons.add),
     );

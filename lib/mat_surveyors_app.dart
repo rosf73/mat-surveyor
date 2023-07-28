@@ -23,11 +23,12 @@ class MatSurveyorsApp extends StatelessWidget {
     return MaterialApp.router(
       theme: ThemeData(
         useMaterial3: true,
-        colorSchemeSeed: Colors.green,
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Colors.green[700],
+        colorSchemeSeed: Colors.white,
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color.fromARGB(255, 255, 110, 110),
           foregroundColor: Colors.white,
-        )
+        ),
+        dialogBackgroundColor: Colors.white,
       ),
       routerConfig: GoRouter(routes: [
         GoRoute(
