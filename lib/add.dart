@@ -10,14 +10,25 @@ class AddPopup extends StatefulWidget {
 }
 
 class _AddPopupState extends State<AddPopup> {
+  final InputBorder inputBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(20),
+    borderSide: const BorderSide(
+      color: Color.fromARGB(255, 255, 110, 110),
+      width: 2,
+    )
+  );
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(18.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+      ),
+      child: ListView(
         children: [
-          const SizedBox(height: 10,),
+          const SizedBox(height: 28,),
           const Text('주소주소주소'),
           const SizedBox(height: 10,),
           Align(
@@ -40,12 +51,22 @@ class _AddPopupState extends State<AddPopup> {
             ),
           ),
           const SizedBox(height: 24,),
-          const TextField(
+          TextField(
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: '한 줄 평',
+              labelText: '평가를 해보자',
+              border: const OutlineInputBorder(),
+              enabledBorder: inputBorder,
+              focusedBorder: inputBorder,
+              labelStyle: const TextStyle(color: Colors.black54),
+              filled: true,
+              fillColor: const Color.fromARGB(20, 255, 110, 110),
             ),
+            cursorColor: const Color.fromARGB(200, 255, 110, 110),
+            minLines: 10,
+            maxLines: 10,
+            maxLength: 500,
           ),
+          const SizedBox(height: 28,),
         ],
       ),
     );
