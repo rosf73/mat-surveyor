@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mat_surveyors/utils/context_functions.dart';
+import 'package:mat_surveyors/utils/pair.dart';
 
 class AddExtendButton extends StatelessWidget {
   final Function onClick;
@@ -12,7 +14,6 @@ class AddExtendButton extends StatelessWidget {
     return FloatingActionButton.extended(
       elevation: 3,
       onPressed: () => onClick(),
-      backgroundColor: const Color.fromARGB(255, 255, 110, 110),
       label: const Text('마커 추가하기', style: TextStyle(fontWeight: FontWeight.bold)),
       icon: const Icon(Icons.add),
     );
@@ -20,17 +21,20 @@ class AddExtendButton extends StatelessWidget {
 }
 
 class AddOnCurrentPositionButton extends StatelessWidget {
-  const AddOnCurrentPositionButton({super.key});
-
-  void onPressed() {
-
-  }
+  final Pair<double, double>? Function() onClickWithLocation;
+  const AddOnCurrentPositionButton({
+    super.key,
+    required this.onClickWithLocation,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       elevation: 3,
-      onPressed: onPressed,
+      onPressed: () {
+        var location = onClickWithLocation();
+        showAddPopup(context, location);
+      },
       backgroundColor: Colors.white,
       label: const Text(
         '현채 마커에서',
@@ -48,17 +52,20 @@ class AddOnCurrentPositionButton extends StatelessWidget {
 }
 
 class AddOnNewPositionButton extends StatelessWidget {
-  const AddOnNewPositionButton({super.key});
-
-  void onPressed() {
-
-  }
+  final Function onClick;
+  const AddOnNewPositionButton({
+    super.key,
+    required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       elevation: 3,
-      onPressed: onPressed,
+      onPressed: () {
+        onClick();
+        showAddPopup(context, null);
+      },
       backgroundColor: Colors.white,
       label: const Text(
         '주소 직접입력',

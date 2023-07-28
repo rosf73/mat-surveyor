@@ -23,11 +23,12 @@ class MatSurveyorsApp extends StatelessWidget {
     return MaterialApp.router(
       theme: ThemeData(
         useMaterial3: true,
-        colorSchemeSeed: Colors.green,
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Colors.green[700],
+        colorSchemeSeed: Colors.white,
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Color.fromARGB(255, 255, 110, 110),
           foregroundColor: Colors.white,
-        )
+        ),
+        dialogBackgroundColor: Colors.white,
       ),
       routerConfig: GoRouter(routes: [
         GoRoute(
@@ -95,11 +96,19 @@ class MarkerAddButtons extends StatefulWidget {
 }
 
 class _MarkerAddButtonsState extends State<MarkerAddButtons> {
+  late AppState appState;
+
   bool extended = false;
-  onExtend() {
+  onExtend(bool extend) {
     setState(() {
-      extended = !extended;
+      extended = extend;
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appState = Provider.of<AppState>(context);
   }
 
   @override
@@ -113,15 +122,21 @@ class _MarkerAddButtonsState extends State<MarkerAddButtons> {
             duration: const Duration(milliseconds: 500),
             bottom: extended && widget.enableMarker ? 130.0 : 0.0,
             curve: Curves.fastOutSlowIn,
-            child: const AddOnCurrentPositionButton(),
+            child: AddOnCurrentPositionButton(onClickWithLocation: () {
+              onExtend(false);
+              return appState.markerLocation;
+            }),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
             bottom: extended ? 65 : 0,
             curve: Curves.fastOutSlowIn,
-            child: const AddOnNewPositionButton(),
+            child: AddOnNewPositionButton(onClick: () {
+              onExtend(false);
+              return;
+            }),
           ),
-          AddExtendButton(onClick: onExtend),
+          AddExtendButton(onClick: () => onExtend(!extended)),
         ],
       ),
     );
