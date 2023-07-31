@@ -50,6 +50,7 @@ class _AddPopupState extends State<AddPopup> {
                 child: AddPopupInput(address: address),
               ),
             ),
+            const AddPopupButtons(),
           ],
         ),
       ),
@@ -111,6 +112,44 @@ class AddPopupInput extends StatelessWidget {
         maxLength: 500,
       ),
       const SizedBox(height: 28,),
+    ],
+  );
+}
+
+class AddPopupButtons extends StatelessWidget {
+  const AddPopupButtons({super.key});
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.max,
+    // crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Expanded(
+        child: SizedBox(
+          height: 60,
+          child: TextButton(
+            onPressed: () {},
+            style: TextButton.styleFrom(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
+              backgroundColor: Colors.white,
+            ),
+            child: const Text('닫기'),
+          ),
+        ),
+      ),
+      Expanded(
+        child: SizedBox(
+          height: 60,
+          child: TextButton(
+            onPressed: () {},
+            style: TextButton.styleFrom(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
+              backgroundColor: const Color.fromARGB(255, 255, 110, 110),
+            ),
+            child: const Text('저장', style: TextStyle(color: Colors.white)),
+          ),
+        ),
+      ),
     ],
   );
 }
