@@ -45,7 +45,6 @@ class _AddPopupState extends State<AddPopup> {
         color: Colors.white,
         child: Column(
           children: [
-            const SizedBox(height: 28,),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -70,6 +69,7 @@ class AddPopupInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListView(
     children: [
+      const SizedBox(height: 28,),
       Text(address),
       const SizedBox(height: 10,),
       Align(
@@ -113,6 +113,8 @@ class AddPopupInput extends StatelessWidget {
         maxLines: 10,
         maxLength: 500,
       ),
+      const SizedBox(height: 24,),
+      const Text('사진 첨부'),
       const SizedBox(height: 28,),
     ],
   );
