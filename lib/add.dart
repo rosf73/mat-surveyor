@@ -37,55 +37,80 @@ class _AddPopupState extends State<AddPopup> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
         color: Colors.white,
-      ),
-      child: ListView(
-        children: [
-          const SizedBox(height: 28,),
-          Text(address),
-          const SizedBox(height: 10,),
-          Align(
-            alignment: AlignmentDirectional.center,
-            child: RatingBar.builder(
-              initialRating: 1,
-              minRating: 1,
-              allowHalfRating: true,
-              unratedColor: const Color.fromARGB(60, 255, 110, 110),
-              itemCount: 5,
-              itemPadding: const EdgeInsets.symmetric(horizontal: 5.0),
-              itemSize: 35,
-              itemBuilder: (context, _) => const Icon(
-                CupertinoIcons.star_fill,
-                color: Color.fromARGB(255, 255, 110, 110),
+        child: Column(
+          children: [
+            const SizedBox(height: 28,),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: AddPopupInput(address: address),
               ),
-              onRatingUpdate: (rating) {
-
-              },
             ),
-          ),
-          const SizedBox(height: 24,),
-          TextField(
-            decoration: InputDecoration(
-              labelText: '평가를 해보자',
-              border: const OutlineInputBorder(),
-              enabledBorder: inputBorder,
-              focusedBorder: inputBorder,
-              labelStyle: const TextStyle(color: Colors.black54),
-              filled: true,
-              fillColor: const Color.fromARGB(20, 255, 110, 110),
-            ),
-            cursorColor: const Color.fromARGB(200, 255, 110, 110),
-            minLines: 10,
-            maxLines: 10,
-            maxLength: 500,
-          ),
-          const SizedBox(height: 28,),
-        ],
+          ],
+        ),
       ),
     );
   }
+}
+
+class AddPopupInput extends StatelessWidget {
+  final String address;
+  const AddPopupInput({
+    super.key,
+    required this.address,
+  });
+
+  @override
+  Widget build(BuildContext context) => ListView(
+    children: [
+      Text(address),
+      const SizedBox(height: 10,),
+      Align(
+        alignment: AlignmentDirectional.center,
+        child: RatingBar.builder(
+          initialRating: 1,
+          minRating: 1,
+          allowHalfRating: true,
+          unratedColor: const Color.fromARGB(60, 255, 110, 110),
+          itemCount: 5,
+          itemPadding: const EdgeInsets.symmetric(horizontal: 5.0),
+          itemSize: 35,
+          itemBuilder: (context, _) => const Icon(
+            CupertinoIcons.star_fill,
+            color: Color.fromARGB(255, 255, 110, 110),
+          ),
+          onRatingUpdate: (rating) {
+
+          },
+        ),
+      ),
+      const SizedBox(height: 24,),
+      TextField(
+        decoration: InputDecoration(
+          labelText: '평가를 해보자',
+          border: const OutlineInputBorder(),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(color: Color.fromARGB(255, 255, 110, 110), width: 2,)
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: Color.fromARGB(255, 255, 110, 110), width: 2,)
+          ),
+          labelStyle: const TextStyle(color: Colors.black54),
+          filled: true,
+          fillColor: const Color.fromARGB(20, 255, 110, 110),
+        ),
+        cursorColor: const Color.fromARGB(200, 255, 110, 110),
+        minLines: 10,
+        maxLines: 10,
+        maxLength: 500,
+      ),
+      const SizedBox(height: 28,),
+    ],
+  );
 }
