@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:mat_surveyors/utils/pair.dart';
+
+import 'res/colors.dart';
+import 'utils/pair.dart';
 
 class AddPopup extends StatefulWidget {
   final Pair<double, double>? location;
@@ -20,7 +22,7 @@ class _AddPopupState extends State<AddPopup> {
   final InputBorder inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(20),
     borderSide: const BorderSide(
-      color: Color.fromARGB(255, 255, 110, 110),
+      color: MatColors.primary,
       width: 2,
     )
   );
@@ -76,13 +78,13 @@ class AddPopupInput extends StatelessWidget {
           initialRating: 1,
           minRating: 1,
           allowHalfRating: true,
-          unratedColor: const Color.fromARGB(60, 255, 110, 110),
+          unratedColor: MatColors.primary60,
           itemCount: 5,
           itemPadding: const EdgeInsets.symmetric(horizontal: 5.0),
           itemSize: 35,
           itemBuilder: (context, _) => const Icon(
             CupertinoIcons.star_fill,
-            color: Color.fromARGB(255, 255, 110, 110),
+            color: MatColors.primary,
           ),
           onRatingUpdate: (rating) {
 
@@ -96,17 +98,17 @@ class AddPopupInput extends StatelessWidget {
           border: const OutlineInputBorder(),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: const BorderSide(color: Color.fromARGB(255, 255, 110, 110), width: 2,)
+            borderSide: const BorderSide(color: MatColors.primary, width: 2,)
           ),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: const BorderSide(color: Color.fromARGB(255, 255, 110, 110), width: 2,)
+              borderSide: const BorderSide(color: MatColors.primary, width: 2,)
           ),
           labelStyle: const TextStyle(color: Colors.black54),
           filled: true,
-          fillColor: const Color.fromARGB(20, 255, 110, 110),
+          fillColor: MatColors.primary20,
         ),
-        cursorColor: const Color.fromARGB(200, 255, 110, 110),
+        cursorColor: MatColors.primary200,
         minLines: 10,
         maxLines: 10,
         maxLength: 500,
@@ -144,7 +146,7 @@ class AddPopupButtons extends StatelessWidget {
             onPressed: () {},
             style: TextButton.styleFrom(
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
-              backgroundColor: const Color.fromARGB(255, 255, 110, 110),
+              backgroundColor: MatColors.primary,
             ),
             child: const Text('저장', style: TextStyle(color: Colors.white)),
           ),
