@@ -123,6 +123,7 @@ class _MarkerAddButtonsState extends State<MarkerAddButtons> {
             bottom: extended && widget.enableMarker ? 130.0 : 0.0,
             curve: Curves.fastOutSlowIn,
             child: AddOnCurrentPositionButton(
+              enable: widget.enableMarker,
               location: appState.markerLocation,
               onClick: () {
                 onExtend(false);
