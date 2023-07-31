@@ -21,10 +21,12 @@ class AddExtendButton extends StatelessWidget {
 }
 
 class AddOnCurrentPositionButton extends StatelessWidget {
-  final Pair<double, double>? Function() onClickWithLocation;
+  final Pair<double, double>? location;
+  final Function onClick;
   const AddOnCurrentPositionButton({
     super.key,
-    required this.onClickWithLocation,
+    required this.location,
+    required this.onClick,
   });
 
   @override
@@ -32,7 +34,7 @@ class AddOnCurrentPositionButton extends StatelessWidget {
     return FloatingActionButton.extended(
       elevation: 3,
       onPressed: () {
-        var location = onClickWithLocation();
+        onClick();
         showAddPopup(context, location);
       },
       backgroundColor: Colors.white,
