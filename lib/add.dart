@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -115,9 +118,88 @@ class AddPopupInput extends StatelessWidget {
       ),
       const SizedBox(height: 24,),
       const Text('사진 첨부'),
+      const SizedBox(height: 10,),
+      const AddPopupPictures(),
       const SizedBox(height: 28,),
     ],
   );
+}
+
+class AddPopupPictures extends StatefulWidget {
+  const AddPopupPictures({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _AddPopupPicturesState();
+}
+
+class _AddPopupPicturesState extends State<AddPopupPictures> {
+  List<Image> pictures = [];
+
+  void addPicture(String path) {
+    // TODO : check size limit
+    pictures.add(Image.file(
+      File(path),
+      fit: BoxFit.cover,
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (pictures.isEmpty) {
+      return EmptyPictures(onClick: addPicture);
+    } else {
+      return GridPictures(list: pictures);
+    }
+  }
+}
+
+class EmptyPictures extends StatelessWidget {
+  final Function onClick;
+  const EmptyPictures({
+    super.key,
+    required this.onClick,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 150,
+      child: DottedBorder(
+        borderType: BorderType.RRect,
+        radius: const Radius.circular(12),
+        color: Colors.black12,
+        strokeWidth: 2,
+        dashPattern: const [8, 4],
+        child: const Center(
+          child: Icon(Icons.add_circle, color: Colors.black12,),
+        ),
+      ),
+    );
+  }
+}
+
+class GridPictures extends StatelessWidget {
+  final List<Image> list;
+  const GridPictures({
+    super.key,
+    required this.list,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      childAspectRatio: 1,
+      mainAxisSpacing: 5,
+      crossAxisSpacing: 5,
+      physics: const NeverScrollableScrollPhysics(), // no scrollable option
+      children: List.generate(4, (index) => Container(
+        color: Color.fromARGB(255, (index+1)*50, (index+1)*30, (index+1)*30),
+      )),
+    );
+  }
 }
 
 class AddPopupButtons extends StatelessWidget {
