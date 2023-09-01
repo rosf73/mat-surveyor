@@ -4,6 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'res/colors.dart';
 import 'utils/pair.dart';
@@ -133,58 +134,23 @@ class AddPopupPictures extends StatefulWidget {
 }
 
 class _AddPopupPicturesState extends State<AddPopupPictures> {
-  List<Image> pictures = [];
+  final ImagePicker _picker = ImagePicker();
+  final List<XFile> _pictures = [];
 
-  void addPicture(String path) {
+  void addPicture() async {
     // TODO : check size limit
-    pictures.add(Image.file(
-      File(path),
-      fit: BoxFit.cover,
-    ));
+    final List<XFile> images = await _picker.pickMultiImage();
+
+    setState(() {
+      _pictures.addAll(images);
+    });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (pictures.isEmpty) {
-      return EmptyPictures(onClick: addPicture);
-    } else {
-      return GridPictures(list: pictures);
-    }
+  void removePicture(int index) {
+    setState(() {
+      _pictures.removeAt(index);
+    });
   }
-}
-
-class EmptyPictures extends StatelessWidget {
-  final Function onClick;
-  const EmptyPictures({
-    super.key,
-    required this.onClick,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 150,
-      child: DottedBorder(
-        borderType: BorderType.RRect,
-        radius: const Radius.circular(12),
-        color: Colors.black12,
-        strokeWidth: 2,
-        dashPattern: const [8, 4],
-        child: const Center(
-          child: Icon(Icons.add_circle, color: Colors.black12,),
-        ),
-      ),
-    );
-  }
-}
-
-class GridPictures extends StatelessWidget {
-  final List<Image> list;
-  const GridPictures({
-    super.key,
-    required this.list,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -195,9 +161,87 @@ class GridPictures extends StatelessWidget {
       mainAxisSpacing: 5,
       crossAxisSpacing: 5,
       physics: const NeverScrollableScrollPhysics(), // no scrollable option
-      children: List.generate(4, (index) => Container(
-        color: Color.fromARGB(255, (index+1)*50, (index+1)*30, (index+1)*30),
-      )),
+      children: [
+        for (final (index, file) in _pictures.indexed)
+          GridPicture(
+            file: file,
+            onDelete: () {
+              removePicture(index);
+            },
+          ),
+
+        if (_pictures.length < 4)
+          EmptyPicture(onClick: addPicture),
+      ],
+    );
+  }
+}
+
+class EmptyPicture extends StatelessWidget {
+  final Function onClick;
+  const EmptyPicture({
+    super.key,
+    required this.onClick,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        onClick();
+      },
+      child: SizedBox(
+        width: double.infinity,
+        height: 150,
+        child: DottedBorder(
+          borderType: BorderType.RRect,
+          radius: const Radius.circular(12),
+          color: Colors.black12,
+          strokeWidth: 2,
+          dashPattern: const [8, 4],
+          child: const Center(
+            child: Icon(Icons.add_circle, color: Colors.black12,),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class GridPicture extends StatelessWidget {
+  final XFile file;
+  final Function() onDelete;
+  const GridPicture({
+    super.key,
+    required this.file,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.topRight,
+      children: [
+        Image.file(
+          width: double.infinity,
+          height: double.infinity,
+          File(file.path),
+          fit: BoxFit.cover,
+        ),
+        IconButton(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          style: IconButton.styleFrom(
+            minimumSize: Size.zero,
+            padding: const EdgeInsets.all(3.0),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          icon: const Icon(CupertinoIcons.minus_square_fill, color: MatColors.primary,),
+          onPressed: () {
+            onDelete();
+          },
+        ),
+      ],
     );
   }
 }
