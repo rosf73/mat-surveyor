@@ -122,10 +122,13 @@ class _MarkerAddButtonsState extends State<MarkerAddButtons> {
             duration: const Duration(milliseconds: 500),
             bottom: extended && widget.enableMarker ? 130.0 : 0.0,
             curve: Curves.fastOutSlowIn,
-            child: AddOnCurrentPositionButton(onClickWithLocation: () {
-              onExtend(false);
-              return appState.markerLocation;
-            }),
+            child: AddOnCurrentPositionButton(
+              enable: widget.enableMarker,
+              location: appState.markerLocation,
+              onClick: () {
+                onExtend(false);
+              }
+            ),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
@@ -133,7 +136,6 @@ class _MarkerAddButtonsState extends State<MarkerAddButtons> {
             curve: Curves.fastOutSlowIn,
             child: AddOnNewPositionButton(onClick: () {
               onExtend(false);
-              return;
             }),
           ),
           AddExtendButton(onClick: () => onExtend(!extended)),
