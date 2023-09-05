@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mat_surveyors/utils/context_functions.dart';
-import 'package:mat_surveyors/utils/pair.dart';
+
+import 'res/colors.dart';
+import 'utils/context_functions.dart';
+import 'utils/pair.dart';
 
 class AddExtendButton extends StatelessWidget {
   final Function onClick;
@@ -46,12 +48,12 @@ class AddOnCurrentPositionButton extends StatelessWidget {
         '현채 마커에서',
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 255, 110, 110),
+          color: MatColors.primary,
         ),
       ),
       icon: const Icon(
         Icons.location_on_outlined,
-        color: Color.fromARGB(255, 255, 110, 110),
+        color: MatColors.primary,
       ),
     );
   }
@@ -77,12 +79,12 @@ class AddOnNewPositionButton extends StatelessWidget {
         '주소 직접입력',
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 255, 110, 110),
+          color: MatColors.primary,
         ),
       ),
       icon: const Icon(
         Icons.abc,
-        color: Color.fromARGB(255, 255, 110, 110),
+        color: MatColors.primary,
       ),
     );
   }

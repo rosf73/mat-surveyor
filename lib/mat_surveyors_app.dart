@@ -3,12 +3,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mat_surveyors/floating_action.dart';
-import 'package:mat_surveyors/map.dart';
-import 'package:mat_surveyors/onboard.dart';
-import 'package:mat_surveyors/providers/lifecycle_provider.dart';
-import 'package:mat_surveyors/utils/view_type.dart';
 import 'package:provider/provider.dart';
+
+import 'floating_action.dart';
+import 'map.dart';
+import 'onboard.dart';
+import 'providers/lifecycle_provider.dart';
+import 'res/colors.dart';
+import 'utils/view_type.dart';
 
 enum MatSurveyorsViewType {
   map,
@@ -25,7 +27,7 @@ class MatSurveyorsApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.white,
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Color.fromARGB(255, 255, 110, 110),
+          backgroundColor: MatColors.primary,
           foregroundColor: Colors.white,
         ),
         dialogBackgroundColor: Colors.white,

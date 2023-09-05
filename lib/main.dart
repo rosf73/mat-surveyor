@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:mat_surveyors/providers/lifecycle_provider.dart';
-import 'package:mat_surveyors/widgets/lifecycle_widgets.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/lifecycle_provider.dart';
+import 'widgets/lifecycle_widgets.dart';
 import 'mat_surveyors_app.dart';
 
 void main() async {
