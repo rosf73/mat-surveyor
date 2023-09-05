@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../add.dart';
@@ -10,13 +12,16 @@ void showAddPopup(BuildContext context, Pair<double, double>? location) {
     barrierColor: MatColors.modalBackground,
     barrierDismissible: false,
     builder: (context) {
-      return Dialog(
-        child: AddPopup(
-          location: location,
-          onCancel: () {
-            Navigator.pop(context);
-          },
-        )
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+        child: Dialog(
+          child: AddPopup(
+            location: location,
+            onCancel: () {
+              Navigator.pop(context);
+            },
+          )
+        ),
       );
     },
   );
