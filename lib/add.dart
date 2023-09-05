@@ -11,9 +11,11 @@ import 'utils/pair.dart';
 
 class AddPopup extends StatefulWidget {
   final Pair<double, double>? location;
+  final Function() onCancel;
   const AddPopup({
     super.key,
     this.location,
+    required this.onCancel,
   });
 
   @override
@@ -55,7 +57,9 @@ class _AddPopupState extends State<AddPopup> {
                 child: AddPopupInput(address: address),
               ),
             ),
-            const AddPopupButtons(),
+            AddPopupButtons(
+              onCancel: widget.onCancel,
+            ),
           ],
         ),
       ),
@@ -178,7 +182,7 @@ class _AddPopupPicturesState extends State<AddPopupPictures> {
 }
 
 class EmptyPicture extends StatelessWidget {
-  final Function onClick;
+  final Function() onClick;
   const EmptyPicture({
     super.key,
     required this.onClick,
@@ -187,9 +191,7 @@ class EmptyPicture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        onClick();
-      },
+      onTap: onClick,
       child: SizedBox(
         width: double.infinity,
         height: 150,
@@ -247,7 +249,11 @@ class GridPicture extends StatelessWidget {
 }
 
 class AddPopupButtons extends StatelessWidget {
-  const AddPopupButtons({super.key});
+  final Function() onCancel;
+  const AddPopupButtons({
+    super.key,
+    required this.onCancel,
+  });
 
   @override
   Widget build(BuildContext context) => Row(
@@ -258,7 +264,7 @@ class AddPopupButtons extends StatelessWidget {
         child: SizedBox(
           height: 60,
           child: TextButton(
-            onPressed: () {},
+            onPressed: onCancel,
             style: TextButton.styleFrom(
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
               backgroundColor: Colors.white,
