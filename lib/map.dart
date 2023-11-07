@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'package:mat_surveyors/res/colors.dart';
+import 'package:typicons_flutter/typicons_flutter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -62,7 +64,7 @@ class MatMapState extends State<MatMap> {
     _setMarker(
       latLng: latLng,
       id: 'tap',
-      icon: Icon(Icons.location_on, size: (isAOS) ? 72 : 24),
+      icon: Icon(Typicons.location, color: MatColors.onPrimary, size: (isAOS) ? 60 : 20),
       onTap: () {
         mapController.deleteOverlay(
             const NOverlayInfo(type: NOverlayType.marker, id: 'tap')
