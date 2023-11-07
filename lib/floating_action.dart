@@ -22,6 +22,7 @@ class AddExtendButton extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           color: MatColors.onPrimary,
+          fontSize: 18,
         ),
       ),
       icon: const Icon(Typicons.pencil, color: MatColors.onPrimary),
@@ -60,6 +61,7 @@ class AddOnCurrentPositionButton extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           color: MatColors.primary,
+          fontSize: 18,
         ),
       ),
       icon: const Icon(
@@ -91,6 +93,7 @@ class AddOnNewPositionButton extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           color: MatColors.primary,
+          fontSize: 18,
         ),
       ),
       icon: const Icon(

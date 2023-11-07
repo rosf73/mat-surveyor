@@ -31,6 +31,7 @@ class MatSurveyorsApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
         dialogBackgroundColor: Colors.white,
+        fontFamily: 'main_font',
       ),
       routerConfig: GoRouter(routes: [
         GoRoute(
@@ -82,7 +83,7 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (viewType == ViewType.loading) ? const Center(child: Text('Loading...'))
+    return (viewType == ViewType.loading) ? const Center(child: Text('Loading...', style: TextStyle(fontSize: 18)))
         : (viewType == ViewType.notice) ? const LocationOnboard()
         : (position != null) ? const MatMap()
         : const Center(child: Text('지도를 불러오지 못했습니다.\nError: no position data'));

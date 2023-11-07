@@ -79,7 +79,7 @@ class AddPopupInput extends StatelessWidget {
   Widget build(BuildContext context) => ListView(
     children: [
       const SizedBox(height: 28,),
-      Text(address),
+      Text(address, style: const TextStyle(fontSize: 16)),
       const SizedBox(height: 10,),
       Align(
         alignment: AlignmentDirectional.center,
@@ -113,7 +113,7 @@ class AddPopupInput extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               borderSide: const BorderSide(color: MatColors.onPrimary, width: 4,)
           ),
-          labelStyle: const TextStyle(color: Colors.black54),
+          labelStyle: const TextStyle(color: Colors.black54, fontSize: 20),
           filled: true,
           fillColor: MatColors.primary,
         ),
@@ -121,9 +121,10 @@ class AddPopupInput extends StatelessWidget {
         minLines: 10,
         maxLines: 10,
         maxLength: 500,
+        style: const TextStyle(fontSize: 20),
       ),
       const SizedBox(height: 24,),
-      const Text('사진 첨부'),
+      const Text('사진 첨부', style: TextStyle(fontSize: 20)),
       const SizedBox(height: 10,),
       const AddPopupPictures(),
       const SizedBox(height: 28,),
@@ -270,7 +271,7 @@ class AddPopupButtons extends StatelessWidget {
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
               backgroundColor: MatColors.primary,
             ),
-            child: const Text('닫기', style: TextStyle(color: MatColors.onPrimary)),
+            child: const Text('닫기', style: TextStyle(color: MatColors.onPrimary, fontSize: 20)),
           ),
         ),
       ),
@@ -283,7 +284,7 @@ class AddPopupButtons extends StatelessWidget {
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
               backgroundColor: MatColors.onPrimary,
             ),
-            child: const Text('저장', style: TextStyle(color: MatColors.primary)),
+            child: const Text('저장', style: TextStyle(color: MatColors.primary, fontSize: 20)),
           ),
         ),
       ),
