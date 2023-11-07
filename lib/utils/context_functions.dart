@@ -15,6 +15,7 @@ void showAddPopup(BuildContext context, Pair<double, double>? location) {
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
         child: Dialog(
+          insetPadding: const EdgeInsets.all(15),
           child: AddPopup(
             location: location,
             onCancel: () {
