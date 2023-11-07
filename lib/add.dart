@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:typicons_flutter/typicons_flutter.dart';
 
 import 'res/colors.dart';
 import 'utils/pair.dart';
@@ -86,13 +87,13 @@ class AddPopupInput extends StatelessWidget {
           initialRating: 1,
           minRating: 1,
           allowHalfRating: true,
-          unratedColor: MatColors.primary60,
+          unratedColor: MatColors.onPrimary60,
           itemCount: 5,
-          itemPadding: const EdgeInsets.symmetric(horizontal: 5.0),
+          itemPadding: const EdgeInsets.symmetric(horizontal: 3.5),
           itemSize: 35,
           itemBuilder: (context, _) => const Icon(
-            CupertinoIcons.star_fill,
-            color: MatColors.primary,
+            Typicons.star_full_outline,
+            color: MatColors.onPrimary,
           ),
           onRatingUpdate: (rating) {
 
@@ -106,17 +107,17 @@ class AddPopupInput extends StatelessWidget {
           border: const OutlineInputBorder(),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: const BorderSide(color: MatColors.primary, width: 2,)
+            borderSide: const BorderSide(color: MatColors.onPrimary, width: 4,)
           ),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: const BorderSide(color: MatColors.primary, width: 2,)
+              borderSide: const BorderSide(color: MatColors.onPrimary, width: 4,)
           ),
           labelStyle: const TextStyle(color: Colors.black54),
           filled: true,
-          fillColor: MatColors.primary20,
+          fillColor: MatColors.primary,
         ),
-        cursorColor: MatColors.primary200,
+        cursorColor: MatColors.onPrimary200,
         minLines: 10,
         maxLines: 10,
         maxLength: 500,
@@ -199,7 +200,7 @@ class EmptyPicture extends StatelessWidget {
           borderType: BorderType.RRect,
           radius: const Radius.circular(12),
           color: Colors.black12,
-          strokeWidth: 2,
+          strokeWidth: 4,
           dashPattern: const [8, 4],
           child: const Center(
             child: Icon(Icons.add_circle, color: Colors.black12,),
@@ -238,7 +239,7 @@ class GridPicture extends StatelessWidget {
             padding: const EdgeInsets.all(3.0),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
-          icon: const Icon(CupertinoIcons.minus_square_fill, color: MatColors.primary,),
+          icon: const Icon(CupertinoIcons.minus_square_fill, color: MatColors.highlight),
           onPressed: () {
             onDelete();
           },
@@ -267,9 +268,9 @@ class AddPopupButtons extends StatelessWidget {
             onPressed: onCancel,
             style: TextButton.styleFrom(
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
-              backgroundColor: Colors.white,
+              backgroundColor: MatColors.primary,
             ),
-            child: const Text('닫기'),
+            child: const Text('닫기', style: TextStyle(color: MatColors.onPrimary)),
           ),
         ),
       ),
@@ -280,9 +281,9 @@ class AddPopupButtons extends StatelessWidget {
             onPressed: () {},
             style: TextButton.styleFrom(
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
-              backgroundColor: MatColors.primary,
+              backgroundColor: MatColors.onPrimary,
             ),
-            child: const Text('저장', style: TextStyle(color: Colors.white)),
+            child: const Text('저장', style: TextStyle(color: MatColors.primary)),
           ),
         ),
       ),

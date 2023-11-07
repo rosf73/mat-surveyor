@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:typicons_flutter/typicons_flutter.dart';
 
 import 'res/colors.dart';
 import 'utils/context_functions.dart';
@@ -14,10 +15,20 @@ class AddExtendButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
-      elevation: 3,
+      elevation: 0,
       onPressed: () => onClick(),
-      label: const Text('마커 추가하기', style: TextStyle(fontWeight: FontWeight.bold)),
-      icon: const Icon(Icons.add),
+      label: const Text(
+        '마커 추가하기',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: MatColors.onPrimary,
+        ),
+      ),
+      icon: const Icon(Typicons.pencil, color: MatColors.onPrimary),
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(width: 5, color: MatColors.onPrimary),
+        borderRadius: BorderRadius.circular(16),
+      ),
     );
   }
 }
@@ -36,14 +47,14 @@ class AddOnCurrentPositionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
-      elevation: 3,
+      elevation: 0,
       onPressed: () {
         if (enable) {
           onClick();
           showAddPopup(context, location);
         }
       },
-      backgroundColor: Colors.white,
+      backgroundColor: MatColors.onPrimary,
       label: const Text(
         '현채 마커에서',
         style: TextStyle(
@@ -52,7 +63,7 @@ class AddOnCurrentPositionButton extends StatelessWidget {
         ),
       ),
       icon: const Icon(
-        Icons.location_on_outlined,
+        Typicons.location_outline,
         color: MatColors.primary,
       ),
     );
@@ -69,12 +80,12 @@ class AddOnNewPositionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
-      elevation: 3,
+      elevation: 0,
       onPressed: () {
         onClick();
         showAddPopup(context, null);
       },
-      backgroundColor: Colors.white,
+      backgroundColor: MatColors.onPrimary,
       label: const Text(
         '주소 직접입력',
         style: TextStyle(
@@ -83,7 +94,7 @@ class AddOnNewPositionButton extends StatelessWidget {
         ),
       ),
       icon: const Icon(
-        Icons.abc,
+        Typicons.zoom_outline,
         color: MatColors.primary,
       ),
     );
