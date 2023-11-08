@@ -68,9 +68,16 @@ class _AddPopupState extends State<AddPopup> {
                     rating = value;
                   },
                   onAddPictures: (value) {
-                    // TODO : check size limit
                     setState(() {
-                      pictures.addAll(value);
+                      int cutLength = 4 - value.length;
+                      if (cutLength == 0) {
+                        pictures = value;
+                      } else if (pictures.length > cutLength) {
+                        pictures = pictures.sublist(pictures.length - cutLength);
+                        pictures.addAll(value);
+                      } else {
+                        pictures.addAll(value);
+                      }
                     });
                   },
                   onRemovePicture: (index) {
