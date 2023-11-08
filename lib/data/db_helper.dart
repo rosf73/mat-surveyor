@@ -28,7 +28,7 @@ class DBHelper {
       version: 2,
       onCreate: (db, version) async { // 가장 첫 DB 생성 시 호출. 그 이후에는 onUpgrade or onDowngrade 호출.
         await db.execute(
-          "CREATE TABLE POST("
+          "CREATE TABLE POSTS("
               "id INTEGER PRIMARY KEY,"
               "lat DOUBLE,"
               "lon DOUBLE,"
