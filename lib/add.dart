@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mat_surveyors/data/db_helper.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
 import 'res/colors.dart';
@@ -25,6 +26,9 @@ class AddPopup extends StatefulWidget {
 
 class _AddPopupState extends State<AddPopup> {
   late String address;
+  double rating = 0;
+  TextEditingController reviewController = TextEditingController(text: '');
+  List<XFile> pictures = [];
 
   final InputBorder inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(20),
@@ -55,11 +59,45 @@ class _AddPopupState extends State<AddPopup> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
-                child: AddPopupInput(address: address),
+                child: AddPopupInput(
+                  address: address,
+                  rating: rating,
+                  reviewController: reviewController,
+                  pictures: pictures,
+                  onChangeRating: (value) {
+                    rating = value;
+                  },
+                  onAddPictures: (value) {
+                    setState(() {
+                      int cutLength = 4 - value.length;
+                      if (cutLength == 0) {
+                        pictures = value;
+                      } else if (pictures.length > cutLength) {
+                        pictures = pictures.sublist(pictures.length - cutLength);
+                        pictures.addAll(value);
+                      } else {
+                        pictures.addAll(value);
+                      }
+                    });
+                  },
+                  onRemovePicture: (index) {
+                    setState(() {
+                      pictures.removeAt(index);
+                    });
+                  },
+                ),
               ),
             ),
             AddPopupButtons(
               onCancel: widget.onCancel,
+              onSave: () {
+                DBHelper().insertToPost(
+                  widget.location!.first, widget.location!.second,
+                  address, rating, reviewController.text,
+                  pictures.map((e) => e.path).toList(),
+                );
+                widget.onCancel();
+              },
             ),
           ],
         ),
@@ -70,9 +108,21 @@ class _AddPopupState extends State<AddPopup> {
 
 class AddPopupInput extends StatelessWidget {
   final String address;
+  final double rating;
+  final TextEditingController reviewController;
+  final List<XFile> pictures;
+  final Function(double) onChangeRating;
+  final Function(List<XFile>) onAddPictures;
+  final Function(int) onRemovePicture;
   const AddPopupInput({
     super.key,
     required this.address,
+    required this.rating,
+    required this.reviewController,
+    required this.pictures,
+    required this.onChangeRating,
+    required this.onAddPictures,
+    required this.onRemovePicture,
   });
 
   @override
@@ -81,59 +131,99 @@ class AddPopupInput extends StatelessWidget {
       const SizedBox(height: 28,),
       Text(address, style: const TextStyle(fontSize: 16)),
       const SizedBox(height: 10,),
-      Align(
-        alignment: AlignmentDirectional.center,
-        child: RatingBar.builder(
-          initialRating: 1,
-          minRating: 1,
-          allowHalfRating: true,
-          unratedColor: MatColors.onPrimary60,
-          itemCount: 5,
-          itemPadding: const EdgeInsets.symmetric(horizontal: 3.5),
-          itemSize: 35,
-          itemBuilder: (context, _) => const Icon(
-            Typicons.star_full_outline,
-            color: MatColors.onPrimary,
-          ),
-          onRatingUpdate: (rating) {
-
-          },
-        ),
-      ),
+      AddPopupRating(rating: rating, onChangeRating: onChangeRating),
       const SizedBox(height: 24,),
-      TextField(
-        decoration: InputDecoration(
-          labelText: '평가를 해보자',
-          border: const OutlineInputBorder(),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: const BorderSide(color: MatColors.onPrimary, width: 4,)
-          ),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: const BorderSide(color: MatColors.onPrimary, width: 4,)
-          ),
-          labelStyle: const TextStyle(color: Colors.black54, fontSize: 20),
-          filled: true,
-          fillColor: MatColors.primary,
-        ),
-        cursorColor: MatColors.onPrimary200,
-        minLines: 10,
-        maxLines: 10,
-        maxLength: 500,
-        style: const TextStyle(fontSize: 20),
-      ),
+      AddPopupTextField(reviewController: reviewController),
       const SizedBox(height: 24,),
       const Text('사진 첨부', style: TextStyle(fontSize: 20)),
       const SizedBox(height: 10,),
-      const AddPopupPictures(),
+      AddPopupPictures(
+        pictures: pictures,
+        onAddPictures: onAddPictures,
+        onRemovePicture: onRemovePicture,
+      ),
       const SizedBox(height: 28,),
     ],
   );
 }
 
+class AddPopupRating extends StatelessWidget {
+  final double rating;
+  final Function(double) onChangeRating;
+  const AddPopupRating({
+    super.key,
+    required this.rating,
+    required this.onChangeRating,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: AlignmentDirectional.center,
+      child: RatingBar.builder(
+        initialRating: rating,
+        minRating: 1,
+        allowHalfRating: true,
+        unratedColor: MatColors.onPrimary60,
+        itemCount: 5,
+        itemPadding: const EdgeInsets.symmetric(horizontal: 3.5),
+        itemSize: 35,
+        itemBuilder: (context, _) => const Icon(
+          Typicons.star_full_outline,
+          color: MatColors.onPrimary,
+        ),
+        onRatingUpdate: onChangeRating,
+      ),
+    );
+  }
+}
+
+class AddPopupTextField extends StatelessWidget {
+  final TextEditingController reviewController;
+  const AddPopupTextField({
+    super.key,
+    required this.reviewController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      decoration: InputDecoration(
+        labelText: '평가를 해보자',
+        border: const OutlineInputBorder(),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(color: MatColors.onPrimary, width: 4,)
+        ),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(color: MatColors.onPrimary, width: 4,)
+        ),
+        labelStyle: const TextStyle(color: Colors.black54, fontSize: 20),
+        filled: true,
+        fillColor: MatColors.primary,
+      ),
+      controller: reviewController,
+      cursorColor: MatColors.onPrimary200,
+      minLines: 10,
+      maxLines: 10,
+      maxLength: 500,
+      style: const TextStyle(fontSize: 20),
+    );
+  }
+}
+
+
 class AddPopupPictures extends StatefulWidget {
-  const AddPopupPictures({super.key});
+  final List<XFile> pictures;
+  final Function(List<XFile>) onAddPictures;
+  final Function(int) onRemovePicture;
+  const AddPopupPictures({
+    super.key,
+    required this.pictures,
+    required this.onAddPictures,
+    required this.onRemovePicture,
+  });
 
   @override
   State<StatefulWidget> createState() => _AddPopupPicturesState();
@@ -141,21 +231,14 @@ class AddPopupPictures extends StatefulWidget {
 
 class _AddPopupPicturesState extends State<AddPopupPictures> {
   final ImagePicker _picker = ImagePicker();
-  final List<XFile> _pictures = [];
 
   void addPicture() async {
-    // TODO : check size limit
     final List<XFile> images = await _picker.pickMultiImage();
-
-    setState(() {
-      _pictures.addAll(images);
-    });
+    widget.onAddPictures(images);
   }
 
   void removePicture(int index) {
-    setState(() {
-      _pictures.removeAt(index);
-    });
+    widget.onRemovePicture(index);
   }
 
   @override
@@ -168,7 +251,7 @@ class _AddPopupPicturesState extends State<AddPopupPictures> {
       crossAxisSpacing: 5,
       physics: const NeverScrollableScrollPhysics(), // no scrollable option
       children: [
-        for (final (index, file) in _pictures.indexed)
+        for (final (index, file) in widget.pictures.indexed)
           GridPicture(
             file: file,
             onDelete: () {
@@ -176,7 +259,7 @@ class _AddPopupPicturesState extends State<AddPopupPictures> {
             },
           ),
 
-        if (_pictures.length < 4)
+        if (widget.pictures.length < 4)
           EmptyPicture(onClick: addPicture),
       ],
     );
@@ -252,9 +335,11 @@ class GridPicture extends StatelessWidget {
 
 class AddPopupButtons extends StatelessWidget {
   final Function() onCancel;
+  final Function() onSave;
   const AddPopupButtons({
     super.key,
     required this.onCancel,
+    required this.onSave,
   });
 
   @override
@@ -279,7 +364,7 @@ class AddPopupButtons extends StatelessWidget {
         child: SizedBox(
           height: 60,
           child: TextButton(
-            onPressed: () {},
+            onPressed: onSave,
             style: TextButton.styleFrom(
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
               backgroundColor: MatColors.onPrimary,
