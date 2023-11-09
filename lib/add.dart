@@ -131,47 +131,9 @@ class AddPopupInput extends StatelessWidget {
       const SizedBox(height: 28,),
       Text(address, style: const TextStyle(fontSize: 16)),
       const SizedBox(height: 10,),
-      Align(
-        alignment: AlignmentDirectional.center,
-        child: RatingBar.builder(
-          initialRating: rating,
-          minRating: 1,
-          allowHalfRating: true,
-          unratedColor: MatColors.onPrimary60,
-          itemCount: 5,
-          itemPadding: const EdgeInsets.symmetric(horizontal: 3.5),
-          itemSize: 35,
-          itemBuilder: (context, _) => const Icon(
-            Typicons.star_full_outline,
-            color: MatColors.onPrimary,
-          ),
-          onRatingUpdate: onChangeRating,
-        ),
-      ),
+      AddPopupRating(rating: rating, onChangeRating: onChangeRating),
       const SizedBox(height: 24,),
-      TextField(
-        decoration: InputDecoration(
-          labelText: '평가를 해보자',
-          border: const OutlineInputBorder(),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: const BorderSide(color: MatColors.onPrimary, width: 4,)
-          ),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: const BorderSide(color: MatColors.onPrimary, width: 4,)
-          ),
-          labelStyle: const TextStyle(color: Colors.black54, fontSize: 20),
-          filled: true,
-          fillColor: MatColors.primary,
-        ),
-        controller: reviewController,
-        cursorColor: MatColors.onPrimary200,
-        minLines: 10,
-        maxLines: 10,
-        maxLength: 500,
-        style: const TextStyle(fontSize: 20),
-      ),
+      AddPopupTextField(reviewController: reviewController),
       const SizedBox(height: 24,),
       const Text('사진 첨부', style: TextStyle(fontSize: 20)),
       const SizedBox(height: 10,),
@@ -184,6 +146,73 @@ class AddPopupInput extends StatelessWidget {
     ],
   );
 }
+
+class AddPopupRating extends StatelessWidget {
+  final double rating;
+  final Function(double) onChangeRating;
+  const AddPopupRating({
+    super.key,
+    required this.rating,
+    required this.onChangeRating,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: AlignmentDirectional.center,
+      child: RatingBar.builder(
+        initialRating: rating,
+        minRating: 1,
+        allowHalfRating: true,
+        unratedColor: MatColors.onPrimary60,
+        itemCount: 5,
+        itemPadding: const EdgeInsets.symmetric(horizontal: 3.5),
+        itemSize: 35,
+        itemBuilder: (context, _) => const Icon(
+          Typicons.star_full_outline,
+          color: MatColors.onPrimary,
+        ),
+        onRatingUpdate: onChangeRating,
+      ),
+    );
+  }
+}
+
+class AddPopupTextField extends StatelessWidget {
+  final TextEditingController reviewController;
+  const AddPopupTextField({
+    super.key,
+    required this.reviewController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      decoration: InputDecoration(
+        labelText: '평가를 해보자',
+        border: const OutlineInputBorder(),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(color: MatColors.onPrimary, width: 4,)
+        ),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(color: MatColors.onPrimary, width: 4,)
+        ),
+        labelStyle: const TextStyle(color: Colors.black54, fontSize: 20),
+        filled: true,
+        fillColor: MatColors.primary,
+      ),
+      controller: reviewController,
+      cursorColor: MatColors.onPrimary200,
+      minLines: 10,
+      maxLines: 10,
+      maxLength: 500,
+      style: const TextStyle(fontSize: 20),
+    );
+  }
+}
+
 
 class AddPopupPictures extends StatefulWidget {
   final List<XFile> pictures;
