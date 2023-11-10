@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:mat_surveyors/data/dto/location.dart';
+import 'package:mat_surveyors/data/dto/post.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -57,9 +59,31 @@ class DBHelper {
     );
   }
 
-  Future<List<Map<String, dynamic>>> selectAllPost() async {
+  Future<List<Location>> selectAllLocation() async {
     final db = await database;
-    return await db.query('POST');
+    final result = await db.query('POST');
+
+    return result.map((e) => Location(
+      e['id'] as int,
+      e['lat'] as double,
+      e['lon'] as double,
+      e['address'] as String,
+    )).toList();
+  }
+
+  Future<List<Post>> selectAllPost() async {
+    final db = await database;
+    final result = await db.query('POST');
+
+    return result.map((e) => Post(
+      e['id'] as int,
+      e['lat'] as double,
+      e['lon'] as double,
+      e['address'] as String,
+      e['rating'] as double,
+      e['review'] as String,
+      (jsonDecode(e['pictures'] as String) as List<dynamic>).cast<String>(),
+    )).toList();
   }
 
   Future<void> updatePost(int id, double rating, String address, String review, List<String> pictures) async {
