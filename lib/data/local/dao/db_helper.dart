@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:mat_surveyors/data/local/dto/location.dart';
 import 'package:mat_surveyors/data/local/dto/post.dart';
+import 'package:mat_surveyors/data/memory/map_data.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -51,7 +52,7 @@ class DBHelper {
 
   Future<void> insertToPost(double lat, double lon, String address, double rating, String review, List<String> pictures) async {
     final db = await database;
-    await db.insert(
+    final id = await db.insert(
       'POSTS', // Table name
       { // Data
         'lat': lat,
@@ -63,25 +64,41 @@ class DBHelper {
       },
       conflictAlgorithm: ConflictAlgorithm.replace, // Duplicated Data Strategy
     );
+    MapData().insertPost(id, lat, lon, address, rating, review, pictures); // add cached data
   }
 
   Future<List<Location>> selectAllLocation() async {
-    final db = await database;
-    final result = await db.query('POSTS');
+    final cachedData = MapData().locations;
+    if (cachedData.isNotEmpty) { // If cached data already exist, do not fetch it.
+      log("location is already cached = $cachedData");
+      return cachedData;
+    }
 
-    return result.map((e) => Location(
+    final db = await database;
+    final posts = (await db.query('POSTS')).map((e) => Post(
       e['id'] as int,
       e['lat'] as double,
       e['lon'] as double,
       e['address'] as String,
-    )).toList();
+      e['rating'] as double,
+      e['review'] as String,
+      (jsonDecode(e['pictures'] as String) as List<dynamic>).cast<String>(),
+    ));
+    final result = posts.map((e) => Location(e.id, e.lat, e.lon, e.address,)).toList();
+
+    MapData().posts = posts.toList();
+    return result;
   }
 
   Future<List<Post>> selectAllPost() async {
-    final db = await database;
-    final result = await db.query('POSTS');
+    final cachedData = MapData().posts;
+    if (cachedData.isNotEmpty) { // If cached data already exist, do not fetch it.
+      log("posts is already cached = $cachedData");
+      return cachedData;
+    }
 
-    return result.map((e) => Post(
+    final db = await database;
+    final result = (await db.query('POSTS')).map((e) => Post(
       e['id'] as int,
       e['lat'] as double,
       e['lon'] as double,
@@ -90,6 +107,9 @@ class DBHelper {
       e['review'] as String,
       (jsonDecode(e['pictures'] as String) as List<dynamic>).cast<String>(),
     )).toList();
+
+    MapData().posts = result;
+    return result;
   }
 
   Future<void> updatePost(int id, double rating, String address, String review, List<String> pictures) async {
@@ -105,6 +125,7 @@ class DBHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+    MapData().updatePost(id, rating, address, review, pictures); // modify cached data
   }
 
   Future<void> deletePost(int id) async {
@@ -114,5 +135,6 @@ class DBHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+    MapData().deletePost(id); // remove cached data
   }
 }
