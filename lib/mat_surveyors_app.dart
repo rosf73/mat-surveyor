@@ -66,7 +66,7 @@ class _MatSurveyorsHomeState extends State<MatSurveyorsHome> {
     log("build main view");
     return Scaffold(
       body: MainScreen(viewType: _appState.mainViewType, position: _appState.position),
-      floatingActionButton: MatFloatingActionButtons(appState: _appState),
+      floatingActionButton: MarkerAddButtons(enableMarker: _appState.enableMarker),
     );
   }
 }
@@ -87,50 +87,6 @@ class MainScreen extends StatelessWidget {
         : (viewType == ViewType.notice) ? const LocationOnboard()
         : (position != null) ? const MatMap()
         : const Center(child: Text('지도를 불러오지 못했습니다.\nError: no position data'));
-  }
-}
-
-class MatFloatingActionButtons extends StatelessWidget {
-  final AppState appState;
-  const MatFloatingActionButtons({
-    super.key,
-    required this.appState,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        const Align(
-          alignment: Alignment.topRight,
-          child: TagButtons(),
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: MarkerAddButtons(enableMarker: appState.enableMarker),
-        ),
-      ],
-    );
-  }
-}
-
-class TagButtons extends StatelessWidget {
-  const TagButtons({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
-      padding: const EdgeInsets.all(20),
-      color: Colors.black,
-      child: const Text(
-        'Get!',
-        style: TextStyle(
-          fontSize: 30,
-          color: Colors.white,
-        ),
-      ),
-    );
   }
 }
 

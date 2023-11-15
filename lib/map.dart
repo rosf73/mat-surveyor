@@ -9,6 +9,9 @@ import 'package:mat_surveyors/exceptions/empty.dart';
 import 'package:mat_surveyors/providers/lifecycle_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'data/db_helper.dart';
+import 'data/dto/location.dart';
+
 class MatMap extends StatefulWidget {
   const MatMap({super.key});
 
@@ -41,18 +44,30 @@ class MatMapState extends State<MatMap> {
     var latLng = NLatLng(_appState.position!.latitude, _appState.position!.longitude);
 
     log("build map view");
-    return Center(
-      child: NaverMap(
-        options: options.copyWith(
-          initialCameraPosition: NCameraPosition(target: latLng, zoom: 15,),
+    return Stack(
+      children: [
+        Center(
+          child: NaverMap(
+            options: options.copyWith(
+              initialCameraPosition: NCameraPosition(target: latLng, zoom: 15,),
+            ),
+            onMapReady: onMapReady,
+            onMapTapped: onMapTapped,
+            onSymbolTapped: onSymbolTapped,
+            onCameraChange: onCameraChange,
+            onCameraIdle: onCameraIdle,
+            onSelectedIndoorChanged: onSelectedIndoorChanged,
+          ),
         ),
-        onMapReady: onMapReady,
-        onMapTapped: onMapTapped,
-        onSymbolTapped: onSymbolTapped,
-        onCameraChange: onCameraChange,
-        onCameraIdle: onCameraIdle,
-        onSelectedIndoorChanged: onSelectedIndoorChanged,
-      ),
+        Align(
+          alignment: Alignment.topRight,
+          child: TagButtons(
+            onPressed: () {
+              DBHelper().selectAllLocation().then((value) => showMarkers(value));
+            },
+          ),
+        ),
+      ]
     );
   }
 
@@ -112,5 +127,48 @@ class MatMapState extends State<MatMap> {
     });
 
     mapController.addOverlay(marker);
+  }
+
+  void showMarkers(List<Location> list) async {
+    mapController.clearOverlays(type: NOverlayType.circleOverlay);
+    mapController.addOverlayAll(
+      list.map((e) {
+        return NCircleOverlay(
+          id: e.id.toString(),
+          center: NLatLng(e.lat, e.lon),
+          radius: 15,
+          color: Colors.transparent,
+          outlineColor: Colors.redAccent,
+          outlineWidth: 3,
+        );
+      }).toSet()
+    );
+  }
+}
+
+class TagButtons extends StatelessWidget {
+  final Function() onPressed;
+  const TagButtons({
+    super.key,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
+      padding: const EdgeInsets.all(20),
+      color: Colors.black,
+      child: TextButton(
+        onPressed: onPressed,
+        child: const Text(
+          'Get!',
+          style: TextStyle(
+            fontSize: 30,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
   }
 }
