@@ -9,8 +9,8 @@ import 'package:mat_surveyors/exceptions/empty.dart';
 import 'package:mat_surveyors/providers/lifecycle_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'data/db_helper.dart';
-import 'data/dto/location.dart';
+import 'data/local/dao/db_helper.dart';
+import 'data/local/dto/location.dart';
 
 class MatMap extends StatefulWidget {
   const MatMap({super.key});

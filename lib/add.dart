@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mat_surveyors/data/db_helper.dart';
+import 'package:mat_surveyors/data/local/dao/db_helper.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
 
 import 'res/colors.dart';

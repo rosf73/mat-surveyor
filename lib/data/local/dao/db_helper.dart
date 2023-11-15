@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:mat_surveyors/data/dto/location.dart';
-import 'package:mat_surveyors/data/dto/post.dart';
+import 'package:mat_surveyors/data/local/dto/location.dart';
+import 'package:mat_surveyors/data/local/dto/post.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
