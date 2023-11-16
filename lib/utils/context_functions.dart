@@ -39,13 +39,13 @@ void showReadPopup(BuildContext context, Post post) {
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
         child: Dialog(
-            insetPadding: const EdgeInsets.all(15),
-            child: ReadPopup(
-              post: post,
-              onCancel: () {
-                Navigator.pop(context);
-              },
-            )
+          insetPadding: const EdgeInsets.all(15),
+          child: ReadPopup(
+            post: post,
+            onCancel: () {
+              Navigator.pop(context);
+            },
+          )
         ),
       );
     },
