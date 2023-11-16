@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:mat_surveyors/data/local/dto/location.dart';
 import 'package:mat_surveyors/data/local/dto/post.dart';
 import 'package:mat_surveyors/data/memory/map_data.dart';
+import 'package:mat_surveyors/utils/encoding_functions.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -50,7 +52,7 @@ class DBHelper {
     );
   }
 
-  Future<void> insertToPost(double lat, double lon, String address, double rating, String review, List<String> pictures) async {
+  Future<void> insertToPost(double lat, double lon, String address, double rating, String review, List<Uint8List> pictures) async {
     final db = await database;
     final id = await db.insert(
       'POSTS', // Table name
@@ -82,7 +84,7 @@ class DBHelper {
       e['address'] as String,
       e['rating'] as double,
       e['review'] as String,
-      (jsonDecode(e['pictures'] as String) as List<dynamic>).cast<String>(),
+      (jsonDecode(e['pictures'] as String) as List<dynamic>).map((e) => decodeFromBase64(e)).toList(),
     ));
     final result = posts.map((e) => Location(e.id, e.lat, e.lon, e.address,)).toList();
 
@@ -105,14 +107,14 @@ class DBHelper {
       e['address'] as String,
       e['rating'] as double,
       e['review'] as String,
-      (jsonDecode(e['pictures'] as String) as List<dynamic>).cast<String>(),
+      (jsonDecode(e['pictures'] as String) as List<dynamic>).map((e) => decodeFromBase64(e)).toList(),
     )).toList();
 
     MapData().posts = result;
     return result;
   }
 
-  Future<void> updatePost(int id, double rating, String address, String review, List<String> pictures) async {
+  Future<void> updatePost(int id, double rating, String address, String review, List<Uint8List> pictures) async {
     final db = await database;
     await db.update(
       'POSTS',

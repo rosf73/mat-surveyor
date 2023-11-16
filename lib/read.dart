@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:mat_surveyors/data/local/dto/post.dart';
@@ -53,7 +53,7 @@ class ReadPopupContainer extends StatelessWidget {
       const SizedBox(height: 24,),
       const Text('사진 기록', style: TextStyle(fontSize: 20)),
       const SizedBox(height: 10,),
-      ReadPopupPictures(urls: post.pictures),
+      ReadPopupPictures(imageData: post.pictures),
       const SizedBox(height: 24,),
       const Text('글 기록', style: TextStyle(fontSize: 20)),
       const SizedBox(height: 10,),
@@ -64,10 +64,10 @@ class ReadPopupContainer extends StatelessWidget {
 }
 
 class ReadPopupPictures extends StatelessWidget {
-  final List<String> urls;
+  final List<Uint8List> imageData;
   const ReadPopupPictures({
     super.key,
-    required this.urls,
+    required this.imageData,
   });
 
   @override
@@ -76,15 +76,19 @@ class ReadPopupPictures extends StatelessWidget {
     child: ListView(
       scrollDirection: Axis.horizontal,
       children: [
-        for (final url in urls)
-          Image.file(
-            width: 150,
-            height: 150,
-            File(url),
-            fit: BoxFit.cover,
+        for (final data in imageData)
+          GestureDetector(
+            onTap: () {
+            },
+            child: Image.memory(
+              width: 150,
+              height: 150,
+              data,
+              fit: BoxFit.cover,
+            ),
           ),
 
-        if (urls.isEmpty)
+        if (imageData.isEmpty)
           const Text('등록된 사진이 없습니다', style: TextStyle(fontSize: 18)),
       ],
     ),

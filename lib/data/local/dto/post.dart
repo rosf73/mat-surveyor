@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:typed_data';
 
 class Post {
   final int id;
@@ -7,7 +8,7 @@ class Post {
   final String address;
   final double rating;
   final String review;
-  final List<String> pictures;
+  final List<Uint8List> pictures;
 
   Post(
     this.id,

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../local/dto/post.dart';
 import '../local/dto/location.dart';
 
@@ -16,11 +18,11 @@ class MapData {
 
   factory MapData() => _instance;
 
-  insertPost(int id, double lat, double lon, String address, double rating, String review, List<String> pictures) {
+  insertPost(int id, double lat, double lon, String address, double rating, String review, List<Uint8List> pictures) {
     _posts.add(Post(id, lat, lon, address, rating, review, pictures));
   }
 
-  updatePost(int id, double rating, String address, String review, List<String> pictures) {
+  updatePost(int id, double rating, String address, String review, List<Uint8List> pictures) {
     final index = _posts.indexWhere((e) => e.id == id);
     _posts[index] = Post(id, _posts[index].lat, _posts[index].lon, address, rating, review, pictures);
   }

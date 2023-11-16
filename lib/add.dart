@@ -94,7 +94,7 @@ class _AddPopupState extends State<AddPopup> {
                 DBHelper().insertToPost(
                   widget.location!.first, widget.location!.second,
                   address, rating, reviewController.text,
-                  pictures.map((e) => e.path).toList(),
+                  pictures.map((e) => File(e.path).readAsBytesSync()).toList(),
                 );
                 widget.onCancel();
               },
