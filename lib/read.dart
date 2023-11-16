@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:mat_surveyors/data/local/dto/post.dart';
 import 'package:mat_surveyors/res/colors.dart';
+import 'package:mat_surveyors/utils/context_functions.dart';
 
 class ReadPopup extends StatelessWidget {
   final Post post;
@@ -79,6 +80,7 @@ class ReadPopupPictures extends StatelessWidget {
         for (final data in imageData)
           GestureDetector(
             onTap: () {
+              showPicturePreview(context, data);
             },
             child: Image.memory(
               width: 150,
