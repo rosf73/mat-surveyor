@@ -213,32 +213,25 @@ class AddPopupTextField extends StatelessWidget {
   }
 }
 
-
-class AddPopupPictures extends StatefulWidget {
+class AddPopupPictures extends StatelessWidget {
   final List<XFile> pictures;
   final Function(List<XFile>) onAddPictures;
   final Function(int) onRemovePicture;
-  const AddPopupPictures({
+  final ImagePicker _picker = ImagePicker();
+  AddPopupPictures({
     super.key,
     required this.pictures,
     required this.onAddPictures,
     required this.onRemovePicture,
   });
 
-  @override
-  State<StatefulWidget> createState() => _AddPopupPicturesState();
-}
-
-class _AddPopupPicturesState extends State<AddPopupPictures> {
-  final ImagePicker _picker = ImagePicker();
-
   void addPicture() async {
     final List<XFile> images = await _picker.pickMultiImage();
-    widget.onAddPictures(images);
+    onAddPictures(images);
   }
 
   void removePicture(int index) {
-    widget.onRemovePicture(index);
+    onRemovePicture(index);
   }
 
   @override
@@ -251,7 +244,7 @@ class _AddPopupPicturesState extends State<AddPopupPictures> {
       crossAxisSpacing: 5,
       physics: const NeverScrollableScrollPhysics(), // no scrollable option
       children: [
-        for (final (index, file) in widget.pictures.indexed)
+        for (final (index, file) in pictures.indexed)
           GridPicture(
             file: file,
             onDelete: () {
@@ -259,7 +252,7 @@ class _AddPopupPicturesState extends State<AddPopupPictures> {
             },
           ),
 
-        if (widget.pictures.length < 4)
+        if (pictures.length < 4)
           EmptyPicture(onClick: addPicture),
       ],
     );
