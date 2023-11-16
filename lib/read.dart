@@ -6,9 +6,11 @@ import 'package:mat_surveyors/res/colors.dart';
 
 class ReadPopup extends StatelessWidget {
   final Post post;
+  final Function() onCancel;
   const ReadPopup({
     super.key,
     required this.post,
+    required this.onCancel,
   });
 
   @override
@@ -26,7 +28,7 @@ class ReadPopup extends StatelessWidget {
               ),
             ),
             ReadPopupButtons(
-              onCancel: () {},
+              onCancel: onCancel,
               onModify: () {},
             ),
           ],

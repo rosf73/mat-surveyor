@@ -42,6 +42,9 @@ void showReadPopup(BuildContext context, Post post) {
             insetPadding: const EdgeInsets.all(15),
             child: ReadPopup(
               post: post,
+              onCancel: () {
+                Navigator.pop(context);
+              },
             )
         ),
       );
