@@ -67,6 +67,12 @@ class MatMapState extends State<MatMap> {
             },
           ),
         ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: TagButtons(
+            onPressed: onPressedLocate,
+          ),
+        )
       ]
     );
   }
@@ -107,6 +113,17 @@ class MatMapState extends State<MatMap> {
 
   void onSelectedIndoorChanged(NSelectedIndoor? selectedIndoor) {
     // do something
+  }
+
+  void onPressedLocate() async {
+    mapController.updateCamera(
+        NCameraUpdate.fromCameraPosition(
+            NCameraPosition(
+              target: NLatLng(_appState.position!.latitude, _appState.position!.longitude),
+              zoom: 15.0, // 기본 카메라 줌은 15. (범위 0~21)
+            )
+        )
+    );
   }
 
   void _setMarker({
