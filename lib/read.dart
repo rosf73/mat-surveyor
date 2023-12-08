@@ -82,11 +82,14 @@ class ReadPopupPictures extends StatelessWidget {
             onTap: () {
               showPicturePreview(context, data);
             },
-            child: Image.memory(
-              width: 150,
-              height: 150,
-              data,
-              fit: BoxFit.cover,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Image.memory(
+                width: 150,
+                height: 150,
+                data,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
 
