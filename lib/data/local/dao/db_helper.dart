@@ -52,6 +52,16 @@ class DBHelper {
     );
   }
 
+  Future<void> clearPost() async {
+    final db = await database;
+    await db.delete(
+      'POSTS',
+      where: 'id > ?',
+      whereArgs: [0],
+    );
+    MapData().clearPost();
+  }
+
   Future<void> insertToPost(double lat, double lon, String address, double rating, String review, List<Uint8List> pictures) async {
     final db = await database;
     final id = await db.insert(
@@ -62,7 +72,7 @@ class DBHelper {
         'rating': rating,
         'address': address,
         'review': review,
-        'pictures': jsonEncode(pictures),
+        'pictures': jsonEncode(encodeToBase64List(pictures)),
       },
       conflictAlgorithm: ConflictAlgorithm.replace, // Duplicated Data Strategy
     );
@@ -77,14 +87,15 @@ class DBHelper {
     }
 
     final db = await database;
-    final posts = (await db.query('POSTS')).map((e) => Post(
+    final temp = (await db.query('POSTS'));
+    final posts = temp.map((e) => Post(
       e['id'] as int,
       e['lat'] as double,
       e['lon'] as double,
       e['address'] as String,
       e['rating'] as double,
       e['review'] as String,
-      (jsonDecode(e['pictures'] as String) as List<dynamic>).map((e) => decodeFromBase64(e)).toList(),
+      (jsonDecode(e['pictures'] as String) as List<dynamic>).map((e) => decodeFromBase64(e.toString())).toList(),
     ));
     final result = posts.map((e) => Location(e.id, e.lat, e.lon, e.address,)).toList();
 

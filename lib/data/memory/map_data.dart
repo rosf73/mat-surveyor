@@ -30,4 +30,8 @@ class MapData {
   deletePost(int id) {
     _posts.removeWhere((e) => e.id == id);
   }
+
+  clearPost() {
+    _posts.clear();
+  }
 }

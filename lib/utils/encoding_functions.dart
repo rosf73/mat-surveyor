@@ -10,3 +10,7 @@ String encodeToBase64(Uint8List data) {
 Uint8List decodeFromBase64(String base64String) {
   return base64.decode(base64String);
 }
+
+List<String> encodeToBase64List(List<Uint8List> data) {
+  return data.map((e) => encodeToBase64(e)).toList();
+}
