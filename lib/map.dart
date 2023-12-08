@@ -68,8 +68,8 @@ class MatMapState extends State<MatMap> {
           ),
         ),
         Align(
-          alignment: Alignment.topLeft,
-          child: TagButtons(
+          alignment: Alignment.bottomLeft,
+          child: LocateButton(
             onPressed: onPressedLocate,
           ),
         )
@@ -184,6 +184,31 @@ class TagButtons extends StatelessWidget {
             fontSize: 30,
             color: Colors.white,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class LocateButton extends StatelessWidget {
+  final Function() onPressed;
+  const LocateButton({
+    super.key,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0, 0, 10, 80),
+      child: RawMaterialButton(
+        onPressed: onPressed,
+        fillColor: MatColors.primary,
+        padding: const EdgeInsets.all(12),
+        shape: const CircleBorder(),
+        child: const Icon(
+          Typicons.radar_outline,
+          color: MatColors.onPrimary,
         ),
       ),
     );
