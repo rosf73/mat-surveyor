@@ -67,6 +67,12 @@ class MatMapState extends State<MatMap> {
             },
           ),
         ),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: LocateButton(
+            onPressed: onPressedLocate,
+          ),
+        )
       ]
     );
   }
@@ -107,6 +113,17 @@ class MatMapState extends State<MatMap> {
 
   void onSelectedIndoorChanged(NSelectedIndoor? selectedIndoor) {
     // do something
+  }
+
+  void onPressedLocate() async {
+    mapController.updateCamera(
+        NCameraUpdate.fromCameraPosition(
+            NCameraPosition(
+              target: NLatLng(_appState.position!.latitude, _appState.position!.longitude),
+              zoom: 15.0, // 기본 카메라 줌은 15. (범위 0~21)
+            )
+        )
+    );
   }
 
   void _setMarker({
@@ -167,6 +184,31 @@ class TagButtons extends StatelessWidget {
             fontSize: 30,
             color: Colors.white,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class LocateButton extends StatelessWidget {
+  final Function() onPressed;
+  const LocateButton({
+    super.key,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0, 0, 10, 80),
+      child: RawMaterialButton(
+        onPressed: onPressed,
+        fillColor: MatColors.primary,
+        padding: const EdgeInsets.all(12),
+        shape: const CircleBorder(),
+        child: const Icon(
+          Typicons.radar_outline,
+          color: MatColors.onPrimary,
         ),
       ),
     );
